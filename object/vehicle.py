@@ -20,7 +20,6 @@ class Vehicle:
         self.next_target = generate_shortest_path(start_position, final_target)[1]
         self.final_target = final_target
         self.speed = 0.5
-        print(position, start_position, self.next_target)
     
     def goToTarget(self):
         target = var.node_positions[self.next_target]
