@@ -12,6 +12,9 @@ G = None
 node_positions = {}
 edge_list = []
 
+# Vehicles
+vehicles = []
+
 # Colors
 colors = {
   'WHITE': (255, 255, 255),

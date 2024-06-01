@@ -5,6 +5,7 @@ def generate_shortest_path(source, target):
   return nx.dijkstra_path(var.G, source, target)
 
 half_road = var.edgeWidth // 2
+intolerance = var.edgeWidth // 3
 
 class Vehicle:
     def __init__(self, shape, color, start_position, final_target):
@@ -18,10 +19,33 @@ class Vehicle:
         self.height = shape[1]
         self.color = color
         self.next_target = generate_shortest_path(start_position, final_target)[1]
+        # add weight to the next target
+        
         self.final_target = final_target
         self.speed = 0.5
     
     def goToTarget(self):
+        # check if the next movement could collide with another vehicle
+        next_x = self.x + self.dx * self.speed
+        next_y = self.y + self.dy * self.speed
+    
+        # define 4 points of the vehicle
+        top_left = (next_x - self.width // 2, next_y - self.height // 2)
+        top_right = (next_x + self.width // 2, next_y - self.height // 2)
+        bottom_left = (next_x - self.width // 2, next_y + self.height // 2)
+        bottom_right = (next_x + self.width // 2, next_y + self.height // 2)
+    
+        # make sure the furthest border does not collide with another vehicle
+        if any(
+          v.x - v.width // 2 < max(top_left[0], top_right[0], bottom_left[0], bottom_right[0]) + intolerance and
+          v.x + v.width // 2 > min(top_left[0], top_right[0], bottom_left[0], bottom_right[0]) - intolerance and
+          v.y - v.height // 2 < max(top_left[1], top_right[1], bottom_left[1], bottom_right[1]) + intolerance and
+          v.y + v.height // 2 > min(top_left[1], top_right[1], bottom_left[1], bottom_right[1]) - intolerance
+          for v in var.vehicles if v != self
+        ): 
+          return
+      
+        # move the vehicle
         target = var.node_positions[self.next_target]
         self.dx = target[0] - self.x - half_road
         self.dy = target[1] - self.y - half_road
