@@ -3,11 +3,9 @@ import nodes.vert_edge as vert_edge
 import networkx as nx
 
 def create_graph():
-	var.G = nx.Graph()
-	G = var.G
-	G.add_edges_from(
-   edge_dict['edge'] for edge_dict in var.edge_list
-  )
+  G = nx.Graph()
+  G.add_edges_from(edge_dict['edge'] for edge_dict in var.edge_list)
+  var.G = G
 
 def draw_graph():
   color = var.colors
@@ -22,6 +20,8 @@ def draw_graph():
     start_pos = node_positions[edge[0]]
     end_pos = node_positions[edge[1]]
     
+    # color_used = color['RED'] if edge in zip(shortest_path, shortest_path[1:]) or edge[::-1] in zip(shortest_path, shortest_path[1:]) else color['BLACK']
+    
     # Draw edge line
     var.pyptr.draw.line(win, color['BLACK'], start_pos, end_pos, 20)
   
@@ -35,3 +35,6 @@ def draw_graph():
     text = font.render(str(node), True, color['WHITE'])
     
     win.blit(text, (pos[0] - 5, pos[1] - 8)) # -5 and -8 are offsets to center the text
+    
+def draw_vehicles():
+  pass

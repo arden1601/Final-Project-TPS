@@ -10,6 +10,7 @@ minGap = 50
 G = None
 node_positions = {}
 edge_list = []
+shortest_path = []
 
 # Colors
 colors = {
