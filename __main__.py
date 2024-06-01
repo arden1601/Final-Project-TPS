@@ -52,7 +52,7 @@ def main():
 		'weight': 1,
 		},{
 		'edge': (3, 7),
-		'weight': 1,
+		'weight': 10,
 		},{
 		'edge': (7, 8),
 		'weight': 1,
@@ -62,6 +62,9 @@ def main():
 		},{
 		'edge': (7, 10),
 		'weight': 1,
+		},{
+		'edge': (6, 8),
+		'weight': 1,
 		}
   ]
      
@@ -69,13 +72,13 @@ def main():
 	visualizers.create_graph()
 
 	# Main loop
-	initCars = [1, 2, 3, 4, 5, 7, 8, 9, 10]
+	initCars = [1, 2, 3, 4, 5, 7, 6, 9, 10]
 	vehicles = []	
  	# Create vehicles with initial positions
 	for i in initCars:
 		# random the color
 		color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-		vehicles.append(vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, i, 6))
+		vehicles.append(vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, i, 8))
  
 	running = True
 	while running:

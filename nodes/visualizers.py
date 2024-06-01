@@ -4,7 +4,8 @@ import networkx as nx
 
 def create_graph():
   G = nx.Graph()
-  G.add_edges_from(edge_dict['edge'] for edge_dict in var.edge_list)
+  for edge in var.edge_list:
+    G.add_edge(*edge['edge'], weight=edge['weight'])
   var.G = G
 
 def draw_graph():
