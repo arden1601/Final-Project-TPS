@@ -23,7 +23,7 @@ def draw_graph():
     end_pos = node_positions[edge[1]]
     
     # Draw edge line
-    var.pyptr.draw.line(win, color['BLACK'], start_pos, end_pos, 2)
+    var.pyptr.draw.line(win, color['BLACK'], start_pos, end_pos, 20)
   
   # Draw nodes
   for node, pos in node_positions.items():
