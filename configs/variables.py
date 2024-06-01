@@ -7,10 +7,13 @@ pyptr = None
 
 # Nodes
 minGap = 50
+edgeWidth = 20
 G = None
 node_positions = {}
 edge_list = []
-shortest_path = []
+
+# Vehicles
+vehicles = []
 
 # Colors
 colors = {

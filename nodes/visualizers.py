@@ -1,10 +1,10 @@
 import configs.variables as var
-import nodes.vert_edge as vert_edge
 import networkx as nx
 
 def create_graph():
   G = nx.Graph()
-  G.add_edges_from(edge_dict['edge'] for edge_dict in var.edge_list)
+  for edge in var.edge_list:
+    G.add_edge(*edge['edge'], weight=edge['weight'])
   var.G = G
 
 def draw_graph():
@@ -23,12 +23,12 @@ def draw_graph():
     # color_used = color['RED'] if edge in zip(shortest_path, shortest_path[1:]) or edge[::-1] in zip(shortest_path, shortest_path[1:]) else color['BLACK']
     
     # Draw edge line
-    var.pyptr.draw.line(win, color['BLACK'], start_pos, end_pos, 20)
+    var.pyptr.draw.line(win, color['BLACK'], start_pos, end_pos, var.edgeWidth)
   
   # Draw nodes
   for node, pos in node_positions.items():
     # Draw node circle
-    var.pyptr.draw.circle(win, color['BLUE'], pos, 20)
+    var.pyptr.draw.circle(win, color['BLUE'], pos, var.edgeWidth)
     
     # Draw node number
     font = var.pyptr.font.Font(None, 24)

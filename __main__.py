@@ -3,10 +3,8 @@ import pygame
 import configs.variables as var
 import configs.screen as screen
 import nodes.visualizers as visualizers
-import nodes.vert_edge as vert_edge
-import math
-# import nodes.simulation_map as sm
-import networkx as nx
+import object.vehicle as vehicle
+import random
 
 road_size = 25
 gray = (119, 119, 119)
@@ -14,32 +12,6 @@ gray = (119, 119, 119)
 def draw_road(x, y, scale_w = 1, scale_h = 1):
 	# print(x, y, road_size*scale_w, road_size*scale_h)
 	var.pyptr.draw.rect(var.win, gray, pygame.Rect(x-15, y-15, road_size*scale_w, road_size*scale_h))
-
-def move_along_path(path, positions, speed=1):
-    # Initialize car position at the start of the path
-    car_pos = list(positions[path[0]])
-    current_index = 0
-
-    while current_index < len(path) - 1:
-        start_node = path[current_index]
-        end_node = path[current_index + 1]
-        start_pos = positions[start_node]
-        end_pos = positions[end_node]
-
-        dx, dy = end_pos[0] - start_pos[0], end_pos[1] - start_pos[1]
-        distance = math.hypot(dx, dy)
-        steps = int(distance / speed)
-        step_dx, step_dy = dx / steps, dy / steps
-
-        for _ in range(steps):
-            car_pos[0] += step_dx
-            car_pos[1] += step_dy
-            yield car_pos
-
-        current_index += 1
-
-def shortest_path(source, target):
-  var.shortest_path = nx.dijkstra_path(var.G, source, target)
 
 def main(): 
 	# Initialize Pygame
@@ -49,13 +21,6 @@ def main():
 	# Initialize Screen
 	var.width, var.height = 1000, 600
 	screen.init_screen() 
-	
-	# Initialize Nodes and Edges
-  	# Parameters
-	total_vertices = 30
-	total_edges = 40
-	y_range = 500
-	weight_range = (1, 10)
 
 	# Generate random vertices and edges
 	var.node_positions = {
@@ -89,6 +54,15 @@ def main():
 		},{
 		'edge': (7, 8),
 		'weight': 1,
+		},{
+		'edge': (7, 9),
+		'weight': 1,
+		},{
+		'edge': (7, 10),
+		'weight': 1,
+		},{
+		'edge': (6, 8),
+		'weight': 1,
 		}
   ]
      
@@ -96,8 +70,14 @@ def main():
 	visualizers.create_graph()
 
 	# Main loop
-	shortest_path(1, 8)
-	car_animation = move_along_path(var.shortest_path, var.node_positions, speed=.5)
+	initCars = [1, 2, 3, 4, 5, 7, 6, 9, 10]
+	var.vehicles = []
+ 	# Create vehicles with initial positions
+	for i in initCars:
+		# random the color
+		color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+		var.vehicles.append(vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, i, 8))
+ 
 	running = True
 	while running:
 		for event in var.pyptr.event.get():
@@ -105,15 +85,13 @@ def main():
 				running = False
 
 		visualizers.draw_graph()	
-		print()
   
-		try:
-			car_pos = next(car_animation)
-			var.pyptr.draw.circle(var.win, var.colors['RED'], (int(car_pos[0]), int(car_pos[1])), 10)
-		except StopIteration:
-			pass
-   
-		# for i in var.edge_list:
+		# Move and draw vehicles
+		for vehicleHere in var.vehicles:
+			vehicleHere.goToTarget()
+			vehicleHere.draw(var.win)
+		
+  # for i in var.edge_list:
 		# 	x = var.node_positions[i['edge'][0]][0]
 		# 	y = var.node_positions[i['edge'][0]][1]
 		# 	_x = var.node_positions[i['edge'][1]][0]
