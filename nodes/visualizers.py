@@ -1,11 +1,11 @@
 import configs.variables as var
-import nodes.positions as positions
+import nodes.vert_edge as vert_edge
 import networkx as nx
 
 def create_graph():
 	var.G = nx.Graph()
 	G = var.G
-	G.add_edges_from([(1, 2), (2, 3), (3, 4), (4, 1), (1, 3)])
+	G.add_edges_from(vert_edge.edge_list)
 
 def draw_graph():
   color = var.colors
@@ -13,7 +13,7 @@ def draw_graph():
   win.fill(color['WHITE'])
   
   # Draw edges
-  node_positions = positions.node_positions
+  node_positions = vert_edge.node_positions
   print(node_positions)
   for edge in var.G.edges():
     start_pos = node_positions[edge[0]]
