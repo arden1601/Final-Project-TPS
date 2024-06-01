@@ -3,6 +3,7 @@ import pygame
 import configs.variables as var
 import configs.screen as screen
 import nodes.visualizers as visualizers
+import nodes.vert_edge as vert_edge
 
 def main(): 
 	# Initialize Pygame
@@ -12,6 +13,18 @@ def main():
 	# Initialize Screen
 	var.width, var.height = 600, 500
 	screen.init_screen() 
+ 
+	# Initialize Nodes and Edges
+  # Parameters
+	total_vertices = 30
+	total_edges = 40
+	x_range = 500
+	y_range = 500
+	weight_range = (1, 10)
+
+	# Generate random vertices and edges
+	var.node_positions = vert_edge.generate_random_vertices(total_vertices, x_range, y_range, var.node_positions)
+	var.edge_list = vert_edge.generate_random_edges(total_edges, total_vertices, weight_range, var.edge_list)
  
 	# Create Graph
 	visualizers.create_graph()

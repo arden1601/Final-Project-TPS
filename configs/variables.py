@@ -6,8 +6,10 @@ win = None
 pyptr = None
 
 # Nodes
-node_positions = {}
+minGap = 50
 G = None
+node_positions = {}
+edge_list = []
 
 # Colors
 colors = {
