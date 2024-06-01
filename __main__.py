@@ -20,7 +20,6 @@ def main():
  
 	# Initialize Screen
 	var.width, var.height = 1000, 600
-	var.width, var.height = 1000, 600
 	screen.init_screen() 
 	
 	# Initialize Nodes and Edges
