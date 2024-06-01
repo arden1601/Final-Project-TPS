@@ -14,7 +14,7 @@ def draw_graph():
   
   # Draw edges
   node_positions = vert_edge.node_positions
-  print(node_positions)
+  
   for edge in var.G.edges():
     start_pos = node_positions[edge[0]]
     end_pos = node_positions[edge[1]]
