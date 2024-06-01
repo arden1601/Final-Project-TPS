@@ -1,5 +1,4 @@
 import configs.variables as var
-import nodes.vert_edge as vert_edge
 import networkx as nx
 
 def create_graph():
