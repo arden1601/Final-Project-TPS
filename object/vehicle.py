@@ -163,10 +163,14 @@ class Vehicle:
         self.prevIncoming = self.incoming
         self.position = self.next_target
         self.next_target = generate_shortest_path(self.next_target, self.final_target, generate_width_required(self.type))[1]
+        
         # Reset the direction
         self.incoming = self.direction()
         if self.revertLine():
           self.reverting = True  
+          
+        # Check for the edges
+        print(var.getEdgeLength(self.position, self.next_target))
         
         # add weight to the next target if it is not the final target
         var.G[0]['graph'][self.position][self.next_target]['weight'] = var.G[0]['graph'][self.position][self.next_target]['weight'] + 1

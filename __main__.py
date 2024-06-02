@@ -5,6 +5,8 @@ import configs.screen as screen
 import nodes.visualizers as visualizers
 import object.vehicle as vehicle
 import random
+import configs.init_node_positions as node
+import configs.init_edge_list as edge
 
 def main(): 
 	# Initialize Pygame
@@ -14,102 +16,13 @@ def main():
 	# Initialize Screen
 	var.width, var.height = 1200, 800
 	screen.init_screen() 
-	
-	var.node_positions = {
-		1: (0, 100),
-		2: (100, 0),
-		3: (100, 100),
-		4: (100, 400),
-		5: (200, 400),
-		6: (200, 600),
-		7: (600, 100),
-		8: (600, 600),
-		9: (700, 400),
-		10: (800, 600),
-		11: (900, 100),
-		12: (900, 600),
-		13: (800, 400),
-  	14: (700, 600),
-		}
  
-	var.edge_list = [{
-		'edge': (1, 3),
-		'weight': 1,
-		'width': 2
-		},{
-		'edge': (2, 3),
-		'weight': 1,
-		'width': 2
-		},{
-		'edge': (3, 4),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (4, 5),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (5, 6),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (3, 7),
-		'weight': 10,
-  	'width': 2
-		},{
-		'edge': (8, 7),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (6, 8),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (7, 11),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (11, 12),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (12, 10),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (7, 8),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (10, 12),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (11, 7),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (10, 13),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (13, 9),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (9, 14),
-		'weight': 1,
-  	'width': 2
-		},{
-		'edge': (8, 14),
-		'weight': 1,
-  	'width': 1
-		}
-  ]
+	# Set the minimum gap
+	var.node_positions = {node: (pos[0] * var.minGap, pos[1] * var.minGap) for node, pos in node.init_node_positions.items()}
  
 	# Remove edges that have nodes that are not in the node_positions
-	currentLen = len(var.edge_list)
-	var.edge_list = [edge for edge in var.edge_list if edge['edge'][0] in var.node_positions and edge['edge'][1] in var.node_positions]
+	currentLen = len(edge.edge_list)
+	var.edge_list = [edge for edge in edge.edge_list if edge['edge'][0] in var.node_positions and edge['edge'][1] in var.node_positions]
  
 	# Show warning when there are edges that are not in the node_positions
 	if currentLen != len(var.edge_list):
