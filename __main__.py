@@ -12,9 +12,8 @@ def main():
 	var.pyptr.init()
  
 	# Initialize Screen
-	var.width, var.height = 1000, 600
+	var.width, var.height = 1200, 800
 	screen.init_screen() 
-
 	
 	var.node_positions = {
 		1: (0, 100),
@@ -34,27 +33,59 @@ def main():
 	var.edge_list = [{
 		'edge': (1, 3),
 		'weight': 1,
+		'width': 1
 		},{
 		'edge': (2, 3),
 		'weight': 1,
+		'width': 1
 		},{
 		'edge': (3, 4),
 		'weight': 1,
+  	'width': 1
 		},{
 		'edge': (4, 5),
 		'weight': 1,
+  	'width': 1
 		},{
 		'edge': (5, 6),
 		'weight': 1,
+  	'width': 1
 		},{
 		'edge': (3, 7),
-		'weight': 1,
+		'weight': 10,
+  	'width': 1
 		},{
-		'edge': (7, 8),
+		'edge': (8, 7),
 		'weight': 1,
+  	'width': 1
 		},{
 		'edge': (6, 8),
 		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (7, 9),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (9, 11),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (11, 12),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (12, 10),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (7, 8),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (10, 12),
+		'weight': 1,
+  	'width': 1
 		}
   ]
  
@@ -73,35 +104,37 @@ def main():
 
 	# Main loop
 	initVehicle = [{
-		'begin': 1,
-		'end': 8,
-		'type': 'bike'
-	},
-	{
-		'begin': 1,
-		'end': 8,
-		'type': 'bike'
-	},
-	{
-		'begin': 1,
-		'end': 8,
-		'type': 'bike'
-	},
- 	{
-		'begin': 2,
-		'end': 8,
-		'type': 'bike'
-	},
-	{
-		'begin': 2,
-		'end': 8,
-		'type': 'bike'
-	},
-	{
-		'begin': 2,
+		'begin': 7,
 		'end': 8,
 		'type': 'bike'
 	}]
+	# },
+	# {
+	# 	'begin': 1,
+	# 	'end': 8,
+	# 	'type': 'bike'
+	# },
+	# {
+	# 	'begin': 1,
+	# 	'end': 8,
+	# 	'type': 'bike'
+	# },
+ 	# {
+	# 	'begin': 2,
+	# 	'end': 8,
+	# 	'type': 'bike'
+	# },
+	# {
+	# 	'begin': 2,
+	# 	'end': 8,
+	# 	'type': 'bike'
+	# },
+	# {
+	# 	'begin': 2,
+	# 	'end': 8,
+	# 	'type': 'bike'
+	# }]
+ 
 	var.vehicles = []
  	# Create vehicles with initial positions
 	for veh in initVehicle:

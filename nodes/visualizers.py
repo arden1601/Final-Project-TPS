@@ -15,24 +15,52 @@ def draw_graph():
   # Draw edges
   node_positions = var.node_positions
   
-  for edge in var.G.edges():
+  for idx, edge in enumerate(var.G.edges()):
     # Get start and end positions
     start_pos = node_positions[edge[0]]
     end_pos = node_positions[edge[1]]
     
+    # Check the edge width
+    width = var.edge_list[idx]['width']
+    
+    # check if the direction is up or down
+    gap = var.gap
+    x, y = 0, 0
+    colorUsed = color['BLACK']
+    if start_pos[0] == end_pos[0]:
+      # vertical
+      if start_pos[1] < end_pos[1]: # the road is a vector to the bottom
+        x += gap
+      else: # the road is a vector to the top
+        x -= gap
+        colorUsed = color['GRAY']
+        
+    else:
+      # horizontal
+      if start_pos[0] < end_pos[0]: # the road is a vector to the right
+        y -= gap
+      else: # the road is a vector to the left
+        y += gap
+        colorUsed = color['GRAY']
+    
+    # Add start and end positions with x and y
+    start_pos = (start_pos[0] + x + var.viewMargin[0], start_pos[1] + y + var.viewMargin[1])
+    end_pos = (end_pos[0] + x + var.viewMargin[1], end_pos[1] + y + var.viewMargin[1])
+    
     # Draw edge line
-    var.pyptr.draw.line(win, color['BLACK'], start_pos, end_pos, var.edgeWidth)
+    var.pyptr.draw.line(win, colorUsed, start_pos, end_pos, var.edgeWidth)
   
   # Draw nodes
   for node, pos in node_positions.items():
     # Draw node circle
-    var.pyptr.draw.circle(win, color['BLUE'], pos, var.edgeWidth)
+    pos_new = (pos[0] + var.viewMargin[0], pos[1] + var.viewMargin[1])
+    var.pyptr.draw.circle(win, color['BLUE'], pos_new, var.edgeWidth*1.4)
     
     # Draw node number
     font = var.pyptr.font.Font(None, 24)
     text = font.render(str(node), True, color['WHITE'])
     
-    win.blit(text, (pos[0] - 5, pos[1] - 8)) # -5 and -8 are offsets to center the text
+    win.blit(text, (pos[0] - 5 + var.viewMargin[0], pos[1] - 8 + var.viewMargin[1])) # -5 and -8 are offsets to center the text
     
   # Draw weights
   for edge in var.G.edges():
@@ -47,22 +75,34 @@ def draw_graph():
     font = var.pyptr.font.Font(None, 24)
     text = font.render(str(weight), True, color['BLACK'])
     
-    font = var.pyptr.font.Font(None, 24)
-    text = font.render(str(weight), True, color['BLACK'])
-    
     x, y = 0, 0
     # check if the edge horizontal or vertical
-    gap = var.edgeWidth * 1.2
+    gap = var.gap * 1.2
     if start_pos[0] == end_pos[0]:
-      # vertical
+      # moving horizontal
       x = start_pos[0] - gap
       y = (start_pos[1] + end_pos[1]) // 2
+      
+      if start_pos[1] < end_pos[1]: # the road is a vector to the bottom
+        # make the road moves to the right
+        x += 2*gap + var.edgeWidth
+      else: # the road is a vector to the top
+        # make the road moves to the left
+        x -= gap
+        
     else:
-      # horizontal
+      # moving vertical
       x = (start_pos[0] + end_pos[0]) // 2
       y = start_pos[1] - gap
+      
+      if start_pos[0] < end_pos[0]: # the road is a vector to the right
+        # make the road moves to the bottom
+        y -= gap
+      else: # the road is a vector to the left
+        # make the road moves to the top
+        y += 2*gap + var.edgeWidth
     
-    win.blit(text, (x, y))
+    win.blit(text, (x + var.viewMargin[0], y + var.viewMargin[1]))
     
 def draw_vehicles():
   # Move and draw vehicles
@@ -79,4 +119,4 @@ def draw_the_road():
     _y = var.node_positions[i['edge'][1]][1]
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
-    var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x-15, y-15, road_size*scale_w, road_size*scale_h))
+    var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x-15 + var.viewMargin[0], y-15 + var.viewMargin[1], road_size*scale_w, road_size*scale_h))
