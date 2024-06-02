@@ -6,13 +6,6 @@ import nodes.visualizers as visualizers
 import object.vehicle as vehicle
 import random
 
-road_size = 25
-gray = (119, 119, 119)
-
-def draw_road(x, y, scale_w = 1, scale_h = 1):
-	# print(x, y, road_size*scale_w, road_size*scale_h)
-	var.pyptr.draw.rect(var.win, gray, pygame.Rect(x-15, y-15, road_size*scale_w, road_size*scale_h))
-
 def main(): 
 	# Initialize Pygame
 	var.pyptr = pygame
@@ -87,23 +80,11 @@ def main():
 				running = False
 
 		visualizers.draw_graph()	
-  
-		# Move and draw vehicles
-		for vehicleHere in var.vehicles:
-			vehicleHere.goToTarget()
-			vehicleHere.draw(var.win)
-		
-  # for i in var.edge_list:
-		# 	x = var.node_positions[i['edge'][0]][0]
-		# 	y = var.node_positions[i['edge'][0]][1]
-		# 	_x = var.node_positions[i['edge'][1]][0]
-		# 	_y = var.node_positions[i['edge'][1]][1]
-		# 	scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
-		# 	scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
-		# 	draw_road(x,y, scale_w, scale_h)
-  
-		var.pyptr.display.flip()
+		# visualizers.draw_the_road()
 		visualizers.draw_vehicles()
+  
+		visualizers.draw_vehicles()
+		var.pyptr.display.flip()
   
 	var.pyptr.quit()
 
