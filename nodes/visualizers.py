@@ -2,7 +2,7 @@ import configs.variables as var
 import networkx as nx
 
 def create_graph():
-  G = nx.Graph()
+  G = nx.DiGraph()
   for edge in var.edge_list:
     G.add_edge(*edge['edge'], weight=edge['weight'])
   var.G = G

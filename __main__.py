@@ -45,13 +45,10 @@ def main():
 		'edge': (3, 7),
 		'weight': 1,
 		},{
+		'edge': (8, 7),
+		'weight': 1,
+		},{
 		'edge': (7, 8),
-		'weight': 1,
-		},{
-		'edge': (7, 9),
-		'weight': 1,
-		},{
-		'edge': (7, 10),
 		'weight': 1,
 		},{
 		'edge': (6, 8),
@@ -60,8 +57,15 @@ def main():
   ]
  
 	# Remove edges that have nodes that are not in the node_positions
+	currentLen = len(var.edge_list)
 	var.edge_list = [edge for edge in var.edge_list if edge['edge'][0] in var.node_positions and edge['edge'][1] in var.node_positions]
-     
+ 
+	# Show warning when there are edges that are not in the node_positions
+	if currentLen != len(var.edge_list):
+		print('WARNING: Some edges are not in the node_positions')
+	else:
+		print('All edges are in the node_positions')
+	
 	# Create Graph
 	visualizers.create_graph()
 

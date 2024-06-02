@@ -19,7 +19,11 @@ class Vehicle:
     self.width = shape[0]
     self.height = shape[1]
     self.color = color
-    self.next_target = generate_shortest_path(start_position, final_target)[1]
+    try:
+      self.next_target = generate_shortest_path(start_position, final_target)[1]
+    except nx.NetworkXNoPath:
+      # Kill the vehicle if there is no path
+      var.vehicles.remove(self)
     # add weight to the next target
     var.G[start_position][self.next_target]['weight'] = var.G[start_position][self.next_target]['weight'] + 1
     
