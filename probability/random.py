@@ -2,6 +2,8 @@ import random
 import time
 import object.vehicle as vehicle
 import configs.variables as var
+import networkx as nx
+import configs.extras as extras
 
 def add_repeater(name, repeating, start, end, action):
   var.repeater.append({
@@ -20,16 +22,24 @@ def random_vehicle():
   # get biggest node value
   max_node = max(var.node_positions.keys())
   
-  # random begin
-  random_begin = random.randint(1, max_node)
-  
-  # random end not equal to random begin
-  random_end = random_begin
-  while random_end == random_begin:
-    random_end = random.randint(1, max_node)
-  
   # random type
   random_type = random.choice(['car', 'bike'])
+  
+  while True:
+    # random begin
+    random_begin = random.randint(1, max_node)
+    
+    # random end not equal to random begin
+    random_end = random_begin
+    while random_end == random_begin:
+      random_end = random.randint(1, max_node)
+      
+    # Make sure the path is possible
+    try:
+      extras.generate_shortest_path(random_begin, random_end, extras.generate_width_required(random_type))
+      break
+    except nx.NetworkXNoPath:
+      continue
   
   # create a random vehicle
   veh = {
