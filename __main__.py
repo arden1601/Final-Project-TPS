@@ -15,7 +15,7 @@ def main():
 	var.width, var.height = 1000, 600
 	screen.init_screen() 
 
-	# Generate random vertices and edges
+	
 	var.node_positions = {
 		1: (0, 100),
 		2: (100, 0),
@@ -59,7 +59,7 @@ def main():
 		}
   ]
  
-	# kill all the edge list that has the non-existing edge
+	# Remove edges that have nodes that are not in the node_positions
 	var.edge_list = [edge for edge in var.edge_list if edge['edge'][0] in var.node_positions and edge['edge'][1] in var.node_positions]
      
 	# Create Graph
