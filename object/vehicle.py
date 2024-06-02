@@ -10,7 +10,7 @@ intolerance = var.edgeWidth // 3
 
 
 class Vehicle:
-  def __init__(self, shape, color, start_position, final_target):
+  def __init__(self, shape, color, type, start_position, final_target):
     # Djikstra to find the next target
     try:
       self.next_target = generate_shortest_path(start_position, final_target)[1]
@@ -74,7 +74,14 @@ class Vehicle:
     self.width = shape[0]
     self.height = shape[1]
     self.color = color
-    self.veh_img = var.pyptr.image.load('./assets/Audi.png')
+    self.type = type
+    try:
+      if self.type == 'bike':
+        self.veh_img = var.pyptr.image.load('./assets/bike.png')
+      elif self.type == 'car':
+        self.veh_img = var.pyptr.image.load('./assets/car.png')
+    except:
+      print('Error loading the vehicle image')
     self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       
     # add weight to the next target only if the next target is not the current target
@@ -139,29 +146,28 @@ class Vehicle:
     self.y += self.dy * self.speed
     
     # check if the position is close to the target
-    if self.dx == 0 and self.dy == 0:
-      if not prevRevert:
-        if not (self.next_target == self.final_target):
-          # remove the previous weight
-          var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
-          
-          # Switch to the next target
-          self.prevIncoming = self.incoming
-          self.position = self.next_target
-          self.next_target = generate_shortest_path(self.next_target, self.final_target)[1]
-          # Reset the direction
-          self.incoming = self.direction()
-          if self.revertLine():
-            self.reverting = True  
-          
-          # add weight to the next target if it is not the final target
-          var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] + 1
-        else:
-          # remove the previous weight
-          var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
-          
-          # remove the vehicle
-          var.vehicles.remove(self)
+    if self.dx == 0 and self.dy == 0 and not prevRevert:
+      if not (self.next_target == self.final_target):
+        # remove the previous weight
+        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
+        
+        # Switch to the next target
+        self.prevIncoming = self.incoming
+        self.position = self.next_target
+        self.next_target = generate_shortest_path(self.next_target, self.final_target)[1]
+        # Reset the direction
+        self.incoming = self.direction()
+        if self.revertLine():
+          self.reverting = True  
+        
+        # add weight to the next target if it is not the final target
+        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] + 1
+      else:
+        # remove the previous weight
+        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
+        
+        # remove the vehicle
+        var.vehicles.remove(self)
 
   def movDir(self, direction):
     if direction == 'up':

@@ -121,6 +121,14 @@ def main():
 		'begin': 1,
 		'end': 14,
 		'type': 'bike'
+	 },{
+		'begin': 1,
+		'end': 14,
+		'type': 'bike'
+	 },{
+		'begin': 1,
+		'end': 14,
+		'type': 'car'
 	 },]
 	# },
 	# {
@@ -154,7 +162,7 @@ def main():
 	for veh in initVehicle:
 		# random the color
 		color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-		newVeh = vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, veh['begin'], veh['end'])
+		newVeh = vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, veh['type'], veh['begin'], veh['end'])
 		if not newVeh.next_target == newVeh.position:
 			var.vehicles.append(newVeh)
    
