@@ -168,12 +168,10 @@ class Vehicle:
         self.incoming = self.direction()
         if self.revertLine():
           self.reverting = True  
-          
-        # Check for the edges
-        print(var.getEdgeLength(self.position, self.next_target))
         
         # add weight to the next target if it is not the final target
         var.G[0]['graph'][self.position][self.next_target]['weight'] = var.G[0]['graph'][self.position][self.next_target]['weight'] + 1
+
       else:
         # remove the previous weight
         var.G[0]['graph'][self.position][self.next_target]['weight'] = var.G[0]['graph'][self.position][self.next_target]['weight'] - 1

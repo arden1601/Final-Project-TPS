@@ -39,10 +39,11 @@ def getEdgeLength(start, stop):
   distance = (x**2 + y**2)**.5
   
   # return the distance
-  return distance
+  return distance / minGap
 
 # Vehicles
 vehicles = []
+gigaNumber = 999999
 
 # Colors
 colors = {

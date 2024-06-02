@@ -128,3 +128,33 @@ def draw_the_road():
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
     var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x-15 + var.viewMargin[0], y-15 + var.viewMargin[1], road_size*scale_w, road_size*scale_h))
+    
+def recount_quota():
+  # Loop for each edge
+  for edge in var.G[0]['graph'].edges():
+    # Get the edge position
+    position = edge[0]
+    next_target = edge[1]
+    
+    # Get the current value of the edge
+    current_value = var.G[0]['graph'][position][next_target]['weight']
+    
+    # Find how many vehicles that are also in the same position and target
+    same_target = [v for v in var.vehicles if v.position == position and v.next_target == next_target]
+    total = len(same_target)
+    
+    # Print the current position quota
+    quota = total / var.getEdgeLength(position, next_target)
+    
+    if quota >= 1:
+      # Add the weight of the graph by giganumber
+      var.G[0]['graph'][position][next_target]['weight'] += var.gigaNumber
+    elif current_value > var.gigaNumber:
+      # Reduce the weight of the graph by giganumber
+      var.G[0]['graph'][position][next_target]['weight'] -= var.gigaNumber
+      
+def visualizeEverything():
+  draw_graph()	
+  # draw_the_road()
+  draw_vehicles()
+  draw_vehicles()
