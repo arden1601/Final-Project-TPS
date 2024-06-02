@@ -29,6 +29,7 @@ class Vehicle:
     self.reverting = False
     
     # Check the direction and action
+    self.car_direction = ''
     direction = self.direction()
     if direction == 'down':
       self.x += var.gap
@@ -38,6 +39,7 @@ class Vehicle:
       self.y -= var.gap
     elif direction == 'left':
       self.y += var.gap
+    
       
     # Check if the vehicle is spawned colliding with another vehicle
     while any(
@@ -72,8 +74,8 @@ class Vehicle:
     self.width = shape[0]
     self.height = shape[1]
     self.color = color
-    car_img = var.pyptr.image.load('./assets/Audi.png')
-    self.car = var.pyptr.transform.scale(car_img, (self.width, self.height))
+    self.car_img = var.pyptr.image.load('./assets/Audi.png')
+    self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
       
     # add weight to the next target only if the next target is not the current target
     if not (self.next_target == self.position):
@@ -201,16 +203,41 @@ class Vehicle:
       # Vertical
       # Check if the target vector is to the top or bottom
       if var.node_positions[self.next_target][1] > var.node_positions[self.position][1]: # Vector to the bottom
+        self.car_direction = 'down'
         return 'down'
       else: # Vector to the top
+        self.car_direction = 'up'
         return 'up'
     else:
       # Horizontal
       # Check if the target vector is to the left or right
       if var.node_positions[self.next_target][0] > var.node_positions[self.position][0]: # Vector to the right
+        self.car_direction = 'right'
         return 'right'
       else: # Vector to the left
+        self.car_direction = 'left'
         return 'left'
+      
+  def handle_direction(self):
+    print('handle func executed ')
+    if self.car_direction == 'down':
+      print('down')
+      self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
+      rotate_image = var.pyptr.transform.rotate(self.car, 180)
+      self.car = rotate_image
+    elif self.car_direction == 'right':
+      print('right')
+      self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
+      rotate_image = var.pyptr.transform.rotate(self.car, 90)
+      self.car = rotate_image
+    elif self.car_direction == 'left':
+      print('left')
+      self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
+      rotate_image = var.pyptr.transform.rotate(self.car, 270)
+      self.car = rotate_image
+    else:
+      print('up')
+      self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
 
   def revertLine(self):
     # Check if the vehicle is going horizontal or vertical
@@ -237,4 +264,6 @@ class Vehicle:
     if self.x < -self.width or self.x > var.width or self.y < -self.height or self.y > var.height:
       return
     
-    var.pyptr.draw.rect(screen, self.color, (self.x + var.viewMargin[0], self.y + var.viewMargin[1], self.width, self.height))
+    # var.pyptr.draw.rect(screen, self.color, (self.x + var.viewMargin[0], self.y + var.viewMargin[1], self.width, self.height))
+    self.handle_direction()
+    screen.blit(self.car, (self.x + var.viewMargin[0], self.y + var.viewMargin[1]))
