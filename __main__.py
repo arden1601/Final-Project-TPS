@@ -155,7 +155,6 @@ def main():
 		# random the color
 		color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 		newVeh = vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, veh['begin'], veh['end'])
-		print(newVeh.next_target == newVeh.position)
 		if not newVeh.next_target == newVeh.position:
 			var.vehicles.append(newVeh)
    

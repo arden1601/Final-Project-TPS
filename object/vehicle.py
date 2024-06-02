@@ -219,24 +219,19 @@ class Vehicle:
         return 'left'
       
   def handle_direction(self):
-    print('handle func executed ')
     if self.car_direction == 'down':
-      print('down')
       self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.car, 180)
       self.car = rotate_image
     elif self.car_direction == 'right':
-      print('right')
       self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.car, 90)
       self.car = rotate_image
     elif self.car_direction == 'left':
-      print('left')
       self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.car, 270)
       self.car = rotate_image
     else:
-      print('up')
       self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
 
   def revertLine(self):
@@ -264,6 +259,7 @@ class Vehicle:
     if self.x < -self.width or self.x > var.width or self.y < -self.height or self.y > var.height:
       return
     
-    # var.pyptr.draw.rect(screen, self.color, (self.x + var.viewMargin[0], self.y + var.viewMargin[1], self.width, self.height))
-    self.handle_direction()
+    if not self.reverting:
+      self.handle_direction()
+    
     screen.blit(self.car, (self.x + var.viewMargin[0], self.y + var.viewMargin[1]))
