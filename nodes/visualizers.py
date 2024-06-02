@@ -137,9 +137,20 @@ def draw_the_road():
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
     var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x-15 + var.viewMargin[0], y-15 + var.viewMargin[1], road_size*scale_w, road_size*scale_h))
-      
+
+def draw_clock():
+  font = var.pyptr.font.Font(None, 24)
+  # create an xx:xx format
+  clock_hour = str(var.clock)
+  clock_min = str(var.clock_min)
+  clock = str(0 if var.clock < 10 else '') + clock_hour + ':' + str(0 if var.clock_min < 10 else '') + clock_min
+  
+  text = font.render(str(clock), True, var.colors['BLACK'])
+  var.win.blit(text, (var.width - var.viewMargin[0]*2, var.viewMargin[1]))
+
 def visualizeEverything():
   draw_graph()	
   # draw_the_road()
   draw_vehicles()
   draw_vehicles()
+  draw_clock()
