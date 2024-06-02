@@ -148,7 +148,11 @@ class Vehicle:
         top_left[0] < top_right_v[0] and
         top_right[0] > top_left_v[0] and
         top_left[1] < bottom_left_v[1] and
-        bottom_left[1] > top_left_v[1]
+        bottom_left[1] > top_left_v[1] and
+        top_left[0] < bottom_right_v[0] and
+        bottom_right[0] > top_left_v[0] and
+        top_left[1] < bottom_right_v[1] and
+        bottom_right[1] > top_left_v[1]
       ):
         return
       
