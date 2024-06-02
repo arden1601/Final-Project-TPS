@@ -128,7 +128,7 @@ def draw_vehicles():
     vehicleHere.draw(var.win)
 
 def draw_the_road():
-  road_size = var.edgeWidth
+  road_size = var.edgeWidth + 20
   for i in var.edge_list:
     x = var.node_positions[i['edge'][0]][0]
     y = var.node_positions[i['edge'][0]][1]
@@ -136,7 +136,7 @@ def draw_the_road():
     _y = var.node_positions[i['edge'][1]][1]
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
-    var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x-15 + var.viewMargin[0], y-15 + var.viewMargin[1], road_size*scale_w, road_size*scale_h))
+    var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x-10 + var.viewMargin[0], y-30 + var.viewMargin[1], road_size*scale_w, road_size*scale_h))
 
 def draw_clock():
   font = var.pyptr.font.Font(None, 24)
