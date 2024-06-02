@@ -45,9 +45,6 @@ def main():
 		'edge': (3, 7),
 		'weight': 1,
 		},{
-		'edge': (8, 7),
-		'weight': 1,
-		},{
 		'edge': (7, 8),
 		'weight': 1,
 		},{
