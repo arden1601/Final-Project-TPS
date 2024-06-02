@@ -10,7 +10,6 @@ class Vehicle:
     # Djikstra to find the next target
     self.type = type
     try:
-      print(start_position, final_target)
       self.next_target = extras.generate_shortest_path(start_position, final_target, extras.generate_width_required(self.type))[1]
     except nx.NetworkXNoPath:
       self.next_target = start_position
