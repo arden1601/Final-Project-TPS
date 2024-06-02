@@ -8,6 +8,7 @@ def main():
 	loop = True
 	while loop:
 		visualizers.visualizeEverything()
+
 		var.pyptr.display.flip()
 		
 		for event in var.pyptr.event.get():

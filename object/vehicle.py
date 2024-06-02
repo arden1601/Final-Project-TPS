@@ -1,5 +1,6 @@
 import configs.variables as var
 import networkx as nx
+import configs.extras as extras
 
 def generate_shortest_path(source, target, width):
   # Find G with the width
@@ -97,7 +98,7 @@ class Vehicle:
       var.G[0]['graph'][start_position][self.next_target]['weight'] = var.G[0]['graph'][start_position][self.next_target]['weight'] + 1
     
     self.final_target = final_target
-    self.speed = 0.5
+    self.speed = .5
   
   def goToTarget(self):
     # Target direction
@@ -149,12 +150,31 @@ class Vehicle:
     ): 
       return
       
+    # check if the next movement exceeds the target
+    if direction == 'up' and next_y < target[1] - var.gap // 2 - self.height * multiplier:
+      self.y = target[1] - var.gap // 2 - self.height * multiplier
+      empty_dx_dy()
+    elif direction == 'down' and next_y > target[1] - var.gap // 2 + self.height * multiplier:
+      self.y = target[1] - var.gap // 2 + self.height * multiplier
+      empty_dx_dy()
+    elif direction == 'left' and next_x < target[0] - var.gap // 2 - self.width * multiplier:
+      self.x = target[0] - var.gap // 2 - self.width * multiplier
+      empty_dx_dy()
+    elif direction == 'right' and next_x > target[0] - var.gap // 2 + self.width * multiplier:
+      self.x = target[0] - var.gap // 2 + self.width * multiplier
+      empty_dx_dy()
+      
     # move the vehicle
     self.x += self.dx * self.speed
     self.y += self.dy * self.speed
     
     # check if the position is close to the target
-    if self.dx == 0 and self.dy == 0 and not prevRevert:
+    if self.dx == 0 and self.dy == 0:
+      extras.recount_quota()
+      
+      if prevRevert:
+        return
+        
       if not (self.next_target == self.final_target):
         # remove the previous weight
         var.G[0]['graph'][self.position][self.next_target]['weight'] = var.G[0]['graph'][self.position][self.next_target]['weight'] - 1
@@ -178,6 +198,9 @@ class Vehicle:
         
         # remove the vehicle
         var.vehicles.remove(self)
+        
+        # recount the quota
+        extras.recount_quota()
 
   def movDir(self, direction):
     if direction == 'up':

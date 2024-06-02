@@ -81,7 +81,6 @@ def draw_graph():
     
     # Draw weight
     font = var.pyptr.font.Font(None, 24)
-    text = font.render(str(weight), True, color['BLACK'])
     
     x, y = 0, 0
     # check if the edge horizontal or vertical
@@ -109,6 +108,16 @@ def draw_graph():
       else: # the road is a vector to the left
         # make the road moves to the top
         y += 2*gap + var.edgeWidth
+        
+    # Get how many vehicles that are also in the same position and target
+    same_target = [v for v in var.vehicles if v.position == edge[0] and v.next_target == edge[1]]
+    total = len(same_target)
+    # Count quota
+    max = var.getEdgeLength(edge[0], edge[1])
+    quota = (max - total) / max
+    
+    toRender = quota if var.show == 'quota' else weight if var.show == 'weight' else total if var.show == 'vehicles' else 0
+    text = font.render(str(toRender), True, color['BLACK'])
     
     win.blit(text, (x + var.viewMargin[0], y + var.viewMargin[1]))
     
@@ -128,30 +137,6 @@ def draw_the_road():
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
     var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x-15 + var.viewMargin[0], y-15 + var.viewMargin[1], road_size*scale_w, road_size*scale_h))
-    
-def recount_quota():
-  # Loop for each edge
-  for edge in var.G[0]['graph'].edges():
-    # Get the edge position
-    position = edge[0]
-    next_target = edge[1]
-    
-    # Get the current value of the edge
-    current_value = var.G[0]['graph'][position][next_target]['weight']
-    
-    # Find how many vehicles that are also in the same position and target
-    same_target = [v for v in var.vehicles if v.position == position and v.next_target == next_target]
-    total = len(same_target)
-    
-    # Print the current position quota
-    quota = total / var.getEdgeLength(position, next_target)
-    
-    if quota >= 1:
-      # Add the weight of the graph by giganumber
-      var.G[0]['graph'][position][next_target]['weight'] += var.gigaNumber
-    elif current_value > var.gigaNumber:
-      # Reduce the weight of the graph by giganumber
-      var.G[0]['graph'][position][next_target]['weight'] -= var.gigaNumber
       
 def visualizeEverything():
   draw_graph()	

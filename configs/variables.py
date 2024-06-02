@@ -1,3 +1,8 @@
+# Showing what?
+show_opt = ['quota', 'vehicles', 'weight']
+show = show_opt[2]
+
+
 # Screen Properties
 width, height = 0, 0
 win = None
@@ -39,7 +44,7 @@ def getEdgeLength(start, stop):
   distance = (x**2 + y**2)**.5
   
   # return the distance
-  return distance / minGap
+  return distance / minGap * 2
 
 # Vehicles
 vehicles = []
