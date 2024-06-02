@@ -72,13 +72,42 @@ def main():
 	visualizers.create_graph()
 
 	# Main loop
-	initCars = [1, 1, 1, 2, 2, 2, 2, 2, 2]
+	initVehicle = [{
+		'begin': 1,
+		'end': 8,
+		'type': 'bike'
+	},
+	{
+		'begin': 1,
+		'end': 8,
+		'type': 'bike'
+	},
+	{
+		'begin': 1,
+		'end': 8,
+		'type': 'bike'
+	},
+ 	{
+		'begin': 2,
+		'end': 8,
+		'type': 'bike'
+	},
+	{
+		'begin': 2,
+		'end': 8,
+		'type': 'bike'
+	},
+	{
+		'begin': 2,
+		'end': 8,
+		'type': 'bike'
+	}]
 	var.vehicles = []
  	# Create vehicles with initial positions
-	for i in initCars:
+	for veh in initVehicle:
 		# random the color
 		color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-		var.vehicles.append(vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, i, 8))
+		var.vehicles.append(vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, veh['begin'], veh['end']))
  
 	running = True
 	while running:
