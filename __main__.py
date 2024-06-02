@@ -58,12 +58,15 @@ def main():
 		'weight': 1,
 		}
   ]
+ 
+	# kill all the edge list that has the non-existing edge
+	var.edge_list = [edge for edge in var.edge_list if edge['edge'][0] in var.node_positions and edge['edge'][1] in var.node_positions]
      
 	# Create Graph
 	visualizers.create_graph()
 
 	# Main loop
-	initCars = [1, 2, 3, 4, 5, 7, 6, 9, 10]
+	initCars = [2]
 	var.vehicles = []
  	# Create vehicles with initial positions
 	for i in initCars:
@@ -83,8 +86,6 @@ def main():
   
 		visualizers.draw_vehicles()
 		var.pyptr.display.flip()
-  
-	var.pyptr.quit()
 
 if __name__ == "__main__":
   main()
