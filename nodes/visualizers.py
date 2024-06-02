@@ -152,5 +152,4 @@ def visualizeEverything():
   draw_graph()	
   draw_the_road()
   draw_vehicles()
-  draw_vehicles()
   draw_clock()

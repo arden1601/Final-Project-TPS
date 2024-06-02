@@ -11,7 +11,7 @@ class Vehicle:
     self.type = type
     try:
       self.next_target = extras.generate_shortest_path(start_position, final_target, extras.generate_width_required(self.type))[1]
-    except nx.NetworkXNoPath:
+    except (nx.NetworkXNoPath, nx.NodeNotFound):
       self.next_target = start_position
     
     # Find the position node location

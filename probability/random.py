@@ -37,9 +37,9 @@ def random_vehicle():
     # Make sure the path is possible
     try:
       extras.generate_shortest_path(random_begin, random_end, extras.generate_width_required(random_type))
-      break
-    except nx.NetworkXNoPath:
+    except (nx.NetworkXNoPath, nx.NodeNotFound):
       continue
+    break
   
   # create a random vehicle
   veh = {
