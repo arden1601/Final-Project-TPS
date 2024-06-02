@@ -7,6 +7,8 @@ import random
 import initializers.init_node_positions as node
 import initializers.init_edge_list as edge
 import initializers.init_vehicle as vehi
+import time
+import probability.random as randomvar
 
 def add_2jalur(a, b, we, wd):
 	nodes = {
@@ -66,7 +68,8 @@ def initEverything():
 	# Create Graph
 	visualizers.create_graph()
 
-	# Main loop
+	# Adjust Time
+	var.last_updated = time.time()
  
 	var.vehicles = []
  	# Create vehicles with initial positions
@@ -76,3 +79,6 @@ def initEverything():
 		newVeh = vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, veh['type'], veh['begin'], veh['end'])
 		if not newVeh.next_target == newVeh.position:
 			var.vehicles.append(newVeh)
+   
+  # Initialize Repeaters
+	randomvar.init_repeaters()

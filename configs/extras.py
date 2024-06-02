@@ -1,4 +1,17 @@
 import configs.variables as var
+import networkx as nx
+
+def generate_shortest_path(source, target, width):
+  # Find G with the width
+  for G in var.G:
+    if G['width'] >= width:
+      return nx.dijkstra_path(G['graph'], source, target)
+
+def generate_width_required(type):
+  if type == 'bike':
+    return 1
+  elif type == 'car':
+    return 2
 
 def recount_quota():
   # Loop for each edge

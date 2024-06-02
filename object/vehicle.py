@@ -2,18 +2,6 @@ import configs.variables as var
 import networkx as nx
 import configs.extras as extras
 
-def generate_shortest_path(source, target, width):
-  # Find G with the width
-  for G in var.G:
-    if G['width'] >= width:
-      return nx.dijkstra_path(G['graph'], source, target)
-
-def generate_width_required(type):
-  if type == 'bike':
-    return 1
-  elif type == 'car':
-    return 2
-
 half_road = var.edgeWidth // 2
 intolerance = var.edgeWidth // 3
 
@@ -22,7 +10,8 @@ class Vehicle:
     # Djikstra to find the next target
     self.type = type
     try:
-      self.next_target = generate_shortest_path(start_position, final_target, generate_width_required(self.type))[1]
+      print(start_position, final_target)
+      self.next_target = extras.generate_shortest_path(start_position, final_target, extras.generate_width_required(self.type))[1]
     except nx.NetworkXNoPath:
       self.next_target = start_position
     
@@ -182,7 +171,7 @@ class Vehicle:
         # Switch to the next target
         self.prevIncoming = self.incoming
         self.position = self.next_target
-        self.next_target = generate_shortest_path(self.next_target, self.final_target, generate_width_required(self.type))[1]
+        self.next_target = extras.generate_shortest_path(self.next_target, self.final_target, extras.generate_width_required(self.type))[1]
         
         # Reset the direction
         self.incoming = self.direction()
