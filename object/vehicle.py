@@ -123,20 +123,34 @@ class Vehicle:
     next_y = self.y + self.dy * self.speed
 
     # define 4 points of the vehicle
-    top_left = (next_x - self.width // 2, next_y - self.height // 2)
-    top_right = (next_x + self.width // 2, next_y - self.height // 2)
-    bottom_left = (next_x - self.width // 2, next_y + self.height // 2)
-    bottom_right = (next_x + self.width // 2, next_y + self.height // 2)
-
-    # make sure the furthest border does not collide with another vehicle
-    if any(
-      v.x - v.width // 2 < max(top_left[0], top_right[0], bottom_left[0], bottom_right[0]) + intolerance and
-      v.x + v.width // 2 > min(top_left[0], top_right[0], bottom_left[0], bottom_right[0]) - intolerance and
-      v.y - v.height // 2 < max(top_left[1], top_right[1], bottom_left[1], bottom_right[1]) + intolerance and
-      v.y + v.height // 2 > min(top_left[1], top_right[1], bottom_left[1], bottom_right[1]) - intolerance
-      for v in var.vehicles if v != self
-    ): 
-      return
+    coor_x = next_x + var.viewMargin[0]
+    coor_y = next_y + var.viewMargin[1]
+    top_left = (coor_x, coor_y)
+    top_right = (coor_x + self.width, coor_y)
+    bottom_left = (coor_x, coor_y + self.height)
+    bottom_right = (coor_x + self.width, coor_y + self.height)
+    
+    # check if the vehicle is going to hit another vehicle
+    for v in var.vehicles:
+      if v == self:
+        continue
+      
+      # define 4 points of the vehicle
+      coor_x = v.x + var.viewMargin[0]
+      coor_y = v.y + var.viewMargin[1]
+      top_left_v = (coor_x, coor_y)
+      top_right_v = (coor_x + v.width, coor_y)
+      bottom_left_v = (coor_x, coor_y + v.height)
+      bottom_right_v = (coor_x + v.width, coor_y + v.height)
+      
+      # check if the vehicle is going to hit another vehicle
+      if (
+        top_left[0] < top_right_v[0] and
+        top_right[0] > top_left_v[0] and
+        top_left[1] < bottom_left_v[1] and
+        bottom_left[1] > top_left_v[1]
+      ):
+        return
       
     # check if the vehicle is going to hit the busy node coordinate
     for node, pos in var.node_positions.items():
