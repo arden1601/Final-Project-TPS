@@ -16,7 +16,7 @@ def add_repeater(name, repeating, start, end, action):
   
 
 def init_repater_vehicle():
-  add_repeater('random_vehicle', 1, 0, 24, random_vehicle)
+  add_repeater('random_vehicle', 1, 6, 12, random_vehicle)
 
 def random_vehicle():
   # get biggest node value

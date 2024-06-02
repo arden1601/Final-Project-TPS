@@ -14,34 +14,24 @@ def create_graph():
       'width': widths
     })
 
-def draw_graph():
-  color = var.colors
-  win = var.win
-  win.fill(color['WHITE'])
-  
-  # Draw edges
-  node_positions = var.node_positions
-  
+def draw_edges():
   usedG = var.G[0]['graph']
-  for idx, edge in enumerate(usedG.edges()):
+  for edge in usedG.edges():
     # Get start and end positions
-    start_pos = node_positions[edge[0]]
-    end_pos = node_positions[edge[1]]
-    
-    # Check the edge width
-    width = var.edge_list[idx]['width']
+    start_pos = var.node_positions[edge[0]]
+    end_pos = var.node_positions[edge[1]]
     
     # check if the direction is up or down
     gap = var.gap
     x, y = 0, 0
-    colorUsed = color['BLACK']
+    colorUsed = var.colors['BLACK']
     if start_pos[0] == end_pos[0]:
       # vertical
       if start_pos[1] < end_pos[1]: # the road is a vector to the bottom
         x += gap
       else: # the road is a vector to the top
         x -= gap
-        colorUsed = color['GRAY']
+        colorUsed = var.colors['GRAY']
         
     else:
       # horizontal
@@ -49,32 +39,33 @@ def draw_graph():
         y -= gap
       else: # the road is a vector to the left
         y += gap
-        colorUsed = color['GRAY']
+        colorUsed = var.colors['GRAY']
     
     # Add start and end positions with x and y
     start_pos = (start_pos[0] + x + var.viewMargin[0], start_pos[1] + y + var.viewMargin[1])
     end_pos = (end_pos[0] + x + var.viewMargin[1], end_pos[1] + y + var.viewMargin[1])
     
     # Draw edge line
-    var.pyptr.draw.line(win, colorUsed, start_pos, end_pos, var.edgeWidth)
-  
-  # Draw nodes
-  for node, pos in node_positions.items():
+    var.pyptr.draw.line(var.win, colorUsed, start_pos, end_pos, var.edgeWidth)
+
+def draw_nodes():
+  for node, pos in var.node_positions.items():
     # Draw node circle
     pos_new = (pos[0] + var.viewMargin[0], pos[1] + var.viewMargin[1])
-    var.pyptr.draw.circle(win, color['BLUE'], pos_new, var.edgeWidth*1.4)
+    var.pyptr.draw.circle(var.win, var.colors['BLUE'], pos_new, var.edgeWidth*1.4)
     
     # Draw node number
     font = var.pyptr.font.Font(None, 24)
-    text = font.render(str(node), True, color['WHITE'])
+    text = font.render(str(node), True, var.colors['WHITE'])
     
-    win.blit(text, (pos[0] - 5 + var.viewMargin[0], pos[1] - 8 + var.viewMargin[1])) # -5 and -8 are offsets to center the text
-    
-  # Draw weights
+    var.win.blit(text, (pos[0] - 5 + var.viewMargin[0], pos[1] - 8 + var.viewMargin[1])) # -5 and -8 are offsets to center the text
+
+def draw_weights():
+  usedG = var.G[0]['graph']
   for edge in usedG.edges():
     # Get start and end positions
-    start_pos = node_positions[edge[0]]
-    end_pos = node_positions[edge[1]]
+    start_pos = var.node_positions[edge[0]]
+    end_pos = var.node_positions[edge[1]]
     
     # Get weight
     weight = usedG[edge[0]][edge[1]]['weight']
@@ -117,9 +108,9 @@ def draw_graph():
     quota = (max - total) / max
     
     toRender = quota if var.show == 'quota' else weight if var.show == 'weight' else total if var.show == 'vehicles' else 0
-    text = font.render(str(toRender), True, color['BLACK'])
+    text = font.render(str(toRender), True, var.colors['BLACK'])
     
-    win.blit(text, (x + var.viewMargin[0], y + var.viewMargin[1]))
+    var.win.blit(text, (x + var.viewMargin[0], y + var.viewMargin[1]))
     
 def draw_vehicles():
   # Move and draw vehicles
@@ -133,10 +124,10 @@ def draw_the_road():
   strip_horizontal = var.pyptr.transform.rotate(strip_vertical, 90)
   road_size = var.edgeWidth + 20
   for i in var.edge_list:
-    x = var.node_positions[i['edge'][0]][0]
-    y = var.node_positions[i['edge'][0]][1]
-    _x = var.node_positions[i['edge'][1]][0]
-    _y = var.node_positions[i['edge'][1]][1]
+    x  = var.var.node_positions[i['edge'][0]][0]
+    y  = var.var.node_positions[i['edge'][0]][1]
+    _x = var.var.node_positions[i['edge'][1]][0]
+    _y = var.var.node_positions[i['edge'][1]][1]
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
     var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x - 25 + var.viewMargin[0], y - 30 + var.viewMargin[1], road_size*scale_w + 20, road_size*scale_h + 20))
@@ -169,7 +160,10 @@ def draw_clock():
   var.win.blit(text, (var.width - var.viewMargin[0]*2, var.viewMargin[1]))
 
 def visualizeEverything():
-  draw_graph()	
-  draw_the_road()
+  var.win.fill(var.colors['WHITE'])
+  draw_edges()
+  draw_nodes()
+  draw_weights()
+  # draw_the_road()
   draw_vehicles()
   draw_clock()
