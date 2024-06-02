@@ -127,7 +127,7 @@ def draw_the_road():
     _y = var.var.node_positions[i['edge'][1]][1]
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
-    var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x-10 + var.viewMargin[0], y-30 + var.viewMargin[1], road_size*scale_w, road_size*scale_h))
+    var.pyptr.draw.rect(var.win, var.colors['GREEN'], var.pyptr.Rect(x - 30 + var.viewMargin[0], y - 10 + var.viewMargin[1], road_size*scale_w + 20, road_size*scale_h + 20))
 
 def draw_clock():
   font = var.pyptr.font.Font(None, 24)
