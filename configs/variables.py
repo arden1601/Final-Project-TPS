@@ -9,7 +9,7 @@ win = None
 # Clock
 clock_limit = 24
 clock_min_limit = 4
-clock = 22
+clock = 4
 clock_min = 0
 last_updated = 0
 delay = 1

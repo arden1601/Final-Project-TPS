@@ -10,7 +10,7 @@ import initializers.init_vehicle as vehi
 import time
 import probability.random as randomvar
 
-def add_2jalur(a, b, we, wd):
+def add_2jalur(a, b, we, wd, wd2):
 	nodes = {
 	'edge': (a, b),
 	'weight': we,
@@ -18,7 +18,7 @@ def add_2jalur(a, b, we, wd):
 	nodes2 = {
 	'edge': (b, a),
 	'weight': we,
-	'width': wd}
+	'width': wd2}
 	edge.edge_list.append(nodes)
 	edge.edge_list.append(nodes2)
 def add_jalur(a, b, we, wd):
@@ -38,17 +38,24 @@ def initEverything():
 	screen.init_screen() 
 	
 	# Add more edges
-	add_2jalur(7, 8, 1, 2)
-	add_2jalur(7, 9, 1, 2)
-	add_2jalur(7, 12, 1, 2)
-	add_2jalur(12, 13, 1, 1)
-	add_2jalur(12, 14, 1, 2)
-	add_2jalur(14, 15, 1, 2)
-	add_2jalur(14, 15, 1, 2)
-	add_2jalur(15, 16, 1, 2)
-	add_2jalur(15, 11, 1, 2)
-	add_2jalur(9, 10, 1, 2)
-	add_2jalur(9, 4, 1, 2)
+	add_2jalur(7, 8, 1, 2, 2)
+	add_2jalur(7, 9, 1, 2, 2)
+	add_2jalur(7, 12, 1, 2, 2)
+	add_2jalur(12, 13, 1, 1, 2)
+	add_2jalur(12, 14, 1, 2, 2)
+	add_2jalur(14, 15, 1, 2, 2)
+	add_2jalur(14, 15, 1, 2, 2)
+	add_2jalur(15, 16, 1, 2, 2)
+	add_2jalur(15, 11, 1, 2, 2)
+	add_2jalur(9, 10, 1, 2, 2)
+	add_2jalur(9, 4, 1, 2, 2)
+	add_2jalur(2, 3, 1, 2, 2)
+	add_2jalur(3, 4, 1, 2, 2)
+	add_2jalur(4, 5, 1, 2, 2)
+	add_2jalur(6, 7, 1, 2, 2)
+	add_2jalur(1, 6, 1, 2, 2)
+	add_2jalur(3, 6, 1, 2, 2)
+
 	add_jalur(9, 11, 1, 2)
 	add_jalur(11,9, 1, 1)
  

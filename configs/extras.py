@@ -38,3 +38,9 @@ def recount_quota():
     elif current_value > var.gigaNumber:
       # Reduce the weight of the graph by giganumber
       var.G[0]['graph'][position][next_target]['weight'] -= var.gigaNumber
+      
+def check_nodes_contain_vehicle():
+  # Loop for each nodes
+  for node in var.node_positions.keys():
+    # Find how many vehicles that are also in the same position
+    pass
