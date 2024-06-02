@@ -26,6 +26,7 @@ G = []
 viewMargin = (50, 50)
 node_positions = {}
 edge_list = []
+busy_node = []
 
 def getEdgeLength(start, stop):
   target_edge = (start, stop)

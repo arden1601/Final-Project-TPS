@@ -41,6 +41,35 @@ def recount_quota():
       
 def check_nodes_contain_vehicle():
   # Loop for each nodes
-  for node in var.node_positions.keys():
-    # Find how many vehicles that are also in the same position
-    pass
+  for node, pos in var.node_positions.items():
+    if node in var.busy_node:
+      var.busy_node.remove(node)
+    
+    pos_new = (pos[0] + var.viewMargin[0], pos[1] + var.viewMargin[1])
+    
+    x1, y1 = pos_new[0] - var.edgeWidth*1.4, pos_new[1] - var.edgeWidth*1.4
+    x2, y2 = pos_new[0] + var.edgeWidth*1.4, pos_new[1] + var.edgeWidth*1.4
+    
+    # Definition to draw circle in the node
+    gonnaAppend = False
+    
+    # Check if the node contains a vehicle
+    for veh in var.vehicles:
+      x, y = veh.x + var.viewMargin[0], veh.y + var.viewMargin[1]
+      x_most, y_most = x + veh.width, y + veh.height
+      
+      if (x >= x1 and x <= x2) and (y >= y1 and y <= y2):
+        gonnaAppend = True
+        break
+      elif (x_most >= x1 and x_most <= x2) and (y_most >= y1 and y_most <= y2):
+        gonnaAppend = True
+        break
+      elif (x >= x1 and x <= x2) and (y_most >= y1 and y_most <= y2):
+        gonnaAppend = True
+        break
+      elif (x_most >= x1 and x_most <= x2) and (y >= y1 and y <= y2):
+        gonnaAppend = True
+        break
+      
+    if gonnaAppend:
+      var.busy_node.append(node)

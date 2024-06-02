@@ -13,7 +13,6 @@ def add_repeater(name, repeating, start, end, action):
     'lastTime': time.time(),
     'action': lambda: action
   })
-  
 
 def init_repater_vehicle():
   add_repeater('random_vehicle', 1, 6, 12, random_vehicle)
@@ -27,7 +26,9 @@ def random_vehicle():
   
   while True:
     # random begin
-    random_begin = random.randint(1, max_node)
+    random_begin = random.randint(1, max_node) if len(var.busy_node) == 0 else random.choice(var.busy_node)
+    while random_begin in var.busy_node:
+      random_begin = random.randint(1, max_node)
     
     # random end not equal to random begin
     random_end = random_begin

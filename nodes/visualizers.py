@@ -54,6 +54,17 @@ def draw_nodes():
     pos_new = (pos[0] + var.viewMargin[0], pos[1] + var.viewMargin[1])
     var.pyptr.draw.circle(var.win, var.colors['BLUE'], pos_new, var.edgeWidth*1.4)
     
+    # Draw a square surrounding the circle
+    var.pyptr.draw.rect(
+      var.win,
+      var.colors['BLACK'],
+      var.pyptr.Rect(
+        pos_new[0] - var.edgeWidth*1.4,
+        pos_new[1] - var.edgeWidth*1.4,
+        var.edgeWidth*2.8,
+        var.edgeWidth*2.8),
+      2)
+    
     # Draw node number
     font = var.pyptr.font.Font(None, 24)
     text = font.render(str(node), True, var.colors['WHITE'])
@@ -139,11 +150,21 @@ def draw_clock():
   text = font.render(str(clock), True, var.colors['BLACK'])
   var.win.blit(text, (var.width - var.viewMargin[0]*2, var.viewMargin[1]))
 
+def draw_busy():
+  for node in var.busy_node:
+    pos = var.node_positions[node]
+    pos_new = (pos[0] + var.viewMargin[0], pos[1] + var.viewMargin[1])
+    
+    x1, y1 = pos_new[0] - var.edgeWidth*1.4, pos_new[1] - var.edgeWidth*1.4
+    
+    var.pyptr.draw.ellipse(var.win, var.colors['RED'], var.pyptr.Rect(x1, y1, var.edgeWidth*2.8, var.edgeWidth*2.8), 2)
+
 def visualizeEverything():
   var.win.fill(var.colors['WHITE'])
   draw_edges()
   draw_nodes()
   draw_weights()
+  draw_busy()
   # draw_the_road()
   draw_vehicles()
   draw_clock()
