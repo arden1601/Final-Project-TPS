@@ -29,7 +29,7 @@ class Vehicle:
     self.reverting = False
     
     # Check the direction and action
-    self.car_direction = ''
+    self.veh_direction = ''
     direction = self.direction()
     if direction == 'down':
       self.x += var.gap
@@ -74,8 +74,8 @@ class Vehicle:
     self.width = shape[0]
     self.height = shape[1]
     self.color = color
-    self.car_img = var.pyptr.image.load('./assets/Audi.png')
-    self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
+    self.veh_img = var.pyptr.image.load('./assets/Audi.png')
+    self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       
     # add weight to the next target only if the next target is not the current target
     if not (self.next_target == self.position):
@@ -92,51 +92,29 @@ class Vehicle:
     if self.position == self.next_target:
       return
     
-    # revert handler
-    if self.reverting:
-      direction = self.prevIncoming
-      self.movDir(direction)
-      
-      # check if the vehicle is close to the target with the changed coordinate based on previous direction
-      def empty_dx_dy():
-        self.dx = 0
-        self.dy = 0
-        self.reverting = False
-        
-      if direction == 'up' and self.y == target[1] - var.gap // 2 - self.height:
-        empty_dx_dy()
-      elif direction == 'down' and self.y == target[1] - var.gap // 2 + self.height:
-        empty_dx_dy()
-      elif direction == 'left' and self.x == target[0] - var.gap // 2 - self.width:
-        empty_dx_dy()
-      elif direction == 'right' and self.x == target[0] - var.gap // 2 + self.width:
-        empty_dx_dy()
-        
-      # move the vehicle
-      self.x += self.dx * self.speed
-      self.y += self.dy * self.speed
-        
-      return
-    
     # define the direction
-    direction = self.incoming
+    direction = self.incoming if not self.reverting else self.prevIncoming
     self.movDir(direction)
-      
+    
     # terminate the dx dy if the vehicle is close to the target with the changed coordinate based on previous direction
     def empty_dx_dy():
       self.dx = 0
       self.dy = 0
-      
-    if direction == 'up' and self.y == target[1] - var.gap // 2 + self.height:
-      empty_dx_dy()
-    elif direction == 'down' and self.y == target[1] - var.gap // 2 - self.height:
-      empty_dx_dy()
-    elif direction == 'left' and self.x == target[0] - var.gap // 2 + self.width:
-      empty_dx_dy()
-    elif direction == 'right' and self.x == target[0] - var.gap // 2 - self.width:
-      empty_dx_dy()
+      self.reverting = False
     
-    # # check if the next movement could collide with another vehicle
+    # revert handler
+    prevRevert = self.reverting
+    multiplier = -1 if not self.reverting else 1
+    if direction == 'up' and self.y == target[1] - var.gap // 2 - self.height * multiplier:
+      empty_dx_dy()
+    elif direction == 'down' and self.y == target[1] - var.gap // 2 + self.height * multiplier:
+      empty_dx_dy()
+    elif direction == 'left' and self.x == target[0] - var.gap // 2 - self.width * multiplier:
+      empty_dx_dy()
+    elif direction == 'right' and self.x == target[0] - var.gap // 2 + self.width * multiplier:
+      empty_dx_dy()
+  
+    # check if the next movement could collide with another vehicle
     next_x = self.x + self.dx * self.speed
     next_y = self.y + self.dy * self.speed
 
@@ -162,27 +140,28 @@ class Vehicle:
     
     # check if the position is close to the target
     if self.dx == 0 and self.dy == 0:
-      if not (self.next_target == self.final_target):
-        # remove the previous weight
-        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
-        
-        # Switch to the next target
-        self.prevIncoming = self.incoming
-        self.position = self.next_target
-        self.next_target = generate_shortest_path(self.next_target, self.final_target)[1]
-        # Reset the direction
-        self.incoming = self.direction()
-        if self.revertLine():
-          self.reverting = True  
-        
-        # add weight to the next target if it is not the final target
-        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] + 1
-      else:
-        # remove the previous weight
-        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
-        
-        # remove the vehicle
-        var.vehicles.remove(self)
+      if not prevRevert:
+        if not (self.next_target == self.final_target):
+          # remove the previous weight
+          var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
+          
+          # Switch to the next target
+          self.prevIncoming = self.incoming
+          self.position = self.next_target
+          self.next_target = generate_shortest_path(self.next_target, self.final_target)[1]
+          # Reset the direction
+          self.incoming = self.direction()
+          if self.revertLine():
+            self.reverting = True  
+          
+          # add weight to the next target if it is not the final target
+          var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] + 1
+        else:
+          # remove the previous weight
+          var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
+          
+          # remove the vehicle
+          var.vehicles.remove(self)
 
   def movDir(self, direction):
     if direction == 'up':
@@ -203,36 +182,36 @@ class Vehicle:
       # Vertical
       # Check if the target vector is to the top or bottom
       if var.node_positions[self.next_target][1] > var.node_positions[self.position][1]: # Vector to the bottom
-        self.car_direction = 'down'
+        self.veh_direction = 'down'
         return 'down'
       else: # Vector to the top
-        self.car_direction = 'up'
+        self.veh_direction = 'up'
         return 'up'
     else:
       # Horizontal
       # Check if the target vector is to the left or right
       if var.node_positions[self.next_target][0] > var.node_positions[self.position][0]: # Vector to the right
-        self.car_direction = 'right'
+        self.veh_direction = 'right'
         return 'right'
       else: # Vector to the left
-        self.car_direction = 'left'
+        self.veh_direction = 'left'
         return 'left'
       
   def handle_direction(self):
-    if self.car_direction == 'down':
-      self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
-      rotate_image = var.pyptr.transform.rotate(self.car, 180)
-      self.car = rotate_image
-    elif self.car_direction == 'right':
-      self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
-      rotate_image = var.pyptr.transform.rotate(self.car, 90)
-      self.car = rotate_image
-    elif self.car_direction == 'left':
-      self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
-      rotate_image = var.pyptr.transform.rotate(self.car, 270)
-      self.car = rotate_image
+    if self.veh_direction == 'down':
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
+      rotate_image = var.pyptr.transform.rotate(self.veh, 180)
+      self.veh = rotate_image
+    elif self.veh_direction == 'right':
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
+      rotate_image = var.pyptr.transform.rotate(self.veh, 90)
+      self.veh = rotate_image
+    elif self.veh_direction == 'left':
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
+      rotate_image = var.pyptr.transform.rotate(self.veh, 270)
+      self.veh = rotate_image
     else:
-      self.car = var.pyptr.transform.scale(self.car_img, (self.width , self.height))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
 
   def revertLine(self):
     # Check if the vehicle is going horizontal or vertical
@@ -262,4 +241,4 @@ class Vehicle:
     if not self.reverting:
       self.handle_direction()
     
-    screen.blit(self.car, (self.x + var.viewMargin[0], self.y + var.viewMargin[1]))
+    screen.blit(self.veh, (self.x + var.viewMargin[0], self.y + var.viewMargin[1]))
