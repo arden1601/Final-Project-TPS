@@ -130,6 +130,9 @@ def draw_vehicles():
     vehicleHere.draw(var.win)
 
 def draw_the_road():
+  strip = var.pyptr.image.load('./assets/yellow_strip.jpg')
+  strip_vertical = var.pyptr.transform.scale(strip, (25, 25))
+  strip_horizontal = var.pyptr.transform.rotate(strip_vertical, 90)
   road_size = var.edgeWidth + 20
   for i in var.edge_list:
     x  = var.var.node_positions[i['edge'][0]][0]
@@ -138,7 +141,24 @@ def draw_the_road():
     _y = var.var.node_positions[i['edge'][1]][1]
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
-    var.pyptr.draw.rect(var.win, var.colors['GREEN'], var.pyptr.Rect(x - 30 + var.viewMargin[0], y - 10 + var.viewMargin[1], road_size*scale_w + 20, road_size*scale_h + 20))
+    var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x - 25 + var.viewMargin[0], y - 30 + var.viewMargin[1], road_size*scale_w + 20, road_size*scale_h + 20))
+  # Draw strip Horizontal
+  for i in range(0, 1200,50):
+    var.win.blit(strip_horizontal, (i + 40, 137))
+    var.win.blit(strip_horizontal, (i + 40, 337))
+    if i < 500:
+      var.win.blit(strip_horizontal, (i + 40, 537))
+    if i > 100:
+      var.win.blit(strip_horizontal, (i + 40, 737))
+  for i in range(0, 800,50):
+    if i > 75 and i < 750:
+      var.win.blit(strip_vertical, (142, i + 40))
+    if i < 200:
+      var.win.blit(strip_vertical, (242, i + 40))
+    if i > 500:
+      var.win.blit(strip_vertical, (342, i + 40))
+    var.win.blit(strip_vertical, (1042, i + 40))
+
 
 def draw_clock():
   font = var.pyptr.font.Font(None, 24)
