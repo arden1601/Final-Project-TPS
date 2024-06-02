@@ -15,14 +15,27 @@ class Vehicle:
     try:
       self.next_target = generate_shortest_path(start_position, final_target)[1]
     except nx.NetworkXNoPath:
-      # Kill the vehicle if there is no path
-      var.vehicles.remove(self)
+      self.next_target = start_position
     
     # Find the position node location
     spawn = var.node_positions[start_position]
     self.x = spawn[0] - shape[0] // 2
     self.y = spawn[1] - shape[1] // 2
     
+    # Check if the vehicle is going horizontal or vertical
+    self.position = start_position
+    
+    # Check the direction and action
+    direction = self.direction()
+    if direction == 'down':
+      self.x += var.gap
+    elif direction == 'up':
+      self.x -= var.gap
+    elif direction == 'right':
+      self.y -= var.gap
+    elif direction == 'left':
+      self.y += var.gap
+      
     # Check if the vehicle is spawned colliding with another vehicle
     while any(
       v.x - v.width // 2 < self.x + shape[0] + intolerance and
@@ -51,7 +64,6 @@ class Vehicle:
           self.x += replacement
     
     # Set the vehicle properties
-    self.position = start_position
     self.dx = 0
     self.dy = 0
     self.width = shape[0]
@@ -67,7 +79,39 @@ class Vehicle:
     self.speed = 0.5
   
   def goToTarget(self):
-    # check if the next movement could collide with another vehicle
+    # move the vehicle
+    target = var.node_positions[self.next_target]
+    
+    # define the direction
+    direction = self.direction()
+    if direction == 'up':
+      self.dx = 0
+      self.dy = -1
+    elif direction == 'down':
+      self.dx = 0
+      self.dy = 1
+    elif direction == 'left':
+      self.dx = -1
+      self.dy = 0
+    elif direction == 'right':
+      self.dx = 1
+      self.dy = 0
+      
+    # terminate the dx dy if the vehicle is close to the target with the changed coordinate based on previous direction
+    def empty_dx_dy():
+      self.dx = 0
+      self.dy = 0
+    
+    if direction == 'up' and self.y == target[1] - var.gap // 2 - self.height:
+      empty_dx_dy()
+    elif direction == 'down' and self.y == target[1] - var.gap // 2 - self.height:
+      empty_dx_dy()
+    elif direction == 'left' and self.x == target[0] + var.gap // 2:
+      empty_dx_dy()
+    elif direction == 'right' and self.x == target[0] + var.gap // 2:
+      empty_dx_dy()
+    
+    # # check if the next movement could collide with another vehicle
     next_x = self.x + self.dx * self.speed
     next_y = self.y + self.dy * self.speed
 
@@ -86,17 +130,8 @@ class Vehicle:
       for v in var.vehicles if v != self
     ): 
       return
-  
-    # move the vehicle
-    target = var.node_positions[self.next_target]
-    self.dx = target[0] - self.x - half_road
-    self.dy = target[1] - self.y - half_road
-    
-    if self.dx != 0:
-      self.dx = self.dx / abs(self.dx)
-    elif self.dy != 0:
-      self.dy = self.dy / abs(self.dy)
       
+    # move the vehicle
     self.x += self.dx * self.speed
     self.y += self.dy * self.speed
     
@@ -119,6 +154,25 @@ class Vehicle:
         # remove the vehicle
         var.vehicles.remove(self)
 
+  def direction(self):
+    if var.node_positions[self.next_target][0] == var.node_positions[self.position][0]:
+      # Vertical
+      # Check if the target vector is to the top or bottom
+      if var.node_positions[self.next_target][1] > var.node_positions[self.position][1]: # Vector to the bottom
+        return 'down'
+      else: # Vector to the top
+        return 'up'
+    else:
+      # Horizontal
+      # Check if the target vector is to the left or right
+      if var.node_positions[self.next_target][0] > var.node_positions[self.position][0]: # Vector to the right
+        return 'right'
+      else: # Vector to the left
+        return 'left'
+
   def draw(self, screen):
-    # var.pyptr.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
-    screen.blit(self.car, (self.x, self.y))
+    # Check if the vehicle coordinate is out of the screen
+    if self.x < -self.width or self.x > var.width or self.y < -self.height or self.y > var.height:
+      return
+    
+    var.pyptr.draw.rect(screen, self.color, (self.x + var.viewMargin[0], self.y + var.viewMargin[1], self.width, self.height))

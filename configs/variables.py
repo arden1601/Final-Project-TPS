@@ -8,7 +8,9 @@ pyptr = None
 # Nodes
 minGap = 50
 edgeWidth = 20
+gap = edgeWidth * .9
 G = None
+viewMargin = (50, 50)
 node_positions = {}
 edge_list = []
 
