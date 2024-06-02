@@ -22,6 +22,9 @@ class Vehicle:
     
     # Check if the vehicle is going horizontal or vertical
     self.position = start_position
+    self.incoming = self.direction()
+    self.prevIncoming = None
+    self.reverting = False
     
     # Check the direction and action
     direction = self.direction()
@@ -68,43 +71,63 @@ class Vehicle:
     self.height = shape[1]
     self.color = color
       
-    # add weight to the next target
-    var.G[start_position][self.next_target]['weight'] = var.G[start_position][self.next_target]['weight'] + 1
+    # add weight to the next target only if the next target is not the current target
+    if not (self.next_target == self.position):
+      var.G[start_position][self.next_target]['weight'] = var.G[start_position][self.next_target]['weight'] + 1
     
     self.final_target = final_target
     self.speed = 0.5
   
   def goToTarget(self):
-    # move the vehicle
+    # Target direction
     target = var.node_positions[self.next_target]
     
+    # ignore if the vehicle's position is the same as the target
+    if self.position == self.next_target:
+      return
+    
+    # revert handler
+    if self.reverting:
+      direction = self.prevIncoming
+      self.movDir(direction)
+      
+      # check if the vehicle is close to the target with the changed coordinate based on previous direction
+      def empty_dx_dy():
+        self.dx = 0
+        self.dy = 0
+        self.reverting = False
+        
+      if direction == 'up' and self.y == target[1] - var.gap // 2 - self.height:
+        empty_dx_dy()
+      elif direction == 'down' and self.y == target[1] - var.gap // 2 + self.height:
+        empty_dx_dy()
+      elif direction == 'left' and self.x == target[0] - var.gap // 2 - self.width:
+        empty_dx_dy()
+      elif direction == 'right' and self.x == target[0] - var.gap // 2 + self.width:
+        empty_dx_dy()
+        
+      # move the vehicle
+      self.x += self.dx * self.speed
+      self.y += self.dy * self.speed
+        
+      return
+    
     # define the direction
-    direction = self.direction()
-    if direction == 'up':
-      self.dx = 0
-      self.dy = -1
-    elif direction == 'down':
-      self.dx = 0
-      self.dy = 1
-    elif direction == 'left':
-      self.dx = -1
-      self.dy = 0
-    elif direction == 'right':
-      self.dx = 1
-      self.dy = 0
+    direction = self.incoming
+    self.movDir(direction)
       
     # terminate the dx dy if the vehicle is close to the target with the changed coordinate based on previous direction
     def empty_dx_dy():
       self.dx = 0
       self.dy = 0
-    
-    if direction == 'up' and self.y == target[1] - var.gap // 2 - self.height:
+      
+    if direction == 'up' and self.y == target[1] - var.gap // 2 + self.height:
       empty_dx_dy()
     elif direction == 'down' and self.y == target[1] - var.gap // 2 - self.height:
       empty_dx_dy()
-    elif direction == 'left' and self.x == target[0] + var.gap // 2:
+    elif direction == 'left' and self.x == target[0] - var.gap // 2 + self.width:
       empty_dx_dy()
-    elif direction == 'right' and self.x == target[0] + var.gap // 2:
+    elif direction == 'right' and self.x == target[0] - var.gap // 2 - self.width:
       empty_dx_dy()
     
     # # check if the next movement could collide with another vehicle
@@ -138,8 +161,13 @@ class Vehicle:
         var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
         
         # Switch to the next target
+        self.prevIncoming = self.incoming
         self.position = self.next_target
         self.next_target = generate_shortest_path(self.next_target, self.final_target)[1]
+        # Reset the direction
+        self.incoming = self.direction()
+        if self.revertLine():
+          self.reverting = True  
         
         # add weight to the next target if it is not the final target
         var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] + 1
@@ -149,6 +177,20 @@ class Vehicle:
         
         # remove the vehicle
         var.vehicles.remove(self)
+
+  def movDir(self, direction):
+    if direction == 'up':
+      self.dx = 0
+      self.dy = -1
+    elif direction == 'down':
+      self.dx = 0
+      self.dy = 1
+    elif direction == 'left':
+      self.dx = -1
+      self.dy = 0
+    elif direction == 'right':
+      self.dx = 1
+      self.dy = 0
 
   def direction(self):
     if var.node_positions[self.next_target][0] == var.node_positions[self.position][0]:
@@ -165,6 +207,26 @@ class Vehicle:
         return 'right'
       else: # Vector to the left
         return 'left'
+
+  def revertLine(self):
+    # Check if the vehicle is going horizontal or vertical
+    prevDir = self.prevIncoming
+    direction = self.incoming
+    doRevert = False
+    if prevDir == 'down':
+      if direction == 'up' or direction == 'left':
+        doRevert = True
+    elif prevDir == 'up':
+      if direction == 'down' or direction == 'right':
+        doRevert = True
+    elif prevDir == 'right':
+      if direction == 'left' or direction == 'down':
+        doRevert = True
+    elif prevDir == 'left':
+      if direction == 'right' or direction == 'up':
+        doRevert = True
+        
+    return doRevert
 
   def draw(self, screen):
     # Check if the vehicle coordinate is out of the screen

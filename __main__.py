@@ -24,11 +24,12 @@ def main():
 		6: (200, 600),
 		7: (600, 100),
 		8: (600, 600),
-		9: (800, 100),
+		9: (700, 400),
 		10: (800, 600),
 		11: (900, 100),
 		12: (900, 600),
-		13: (1000, 100),
+		13: (800, 400),
+  	14: (700, 600),
 		}
 	var.edge_list = [{
 		'edge': (1, 3),
@@ -63,11 +64,7 @@ def main():
 		'weight': 1,
   	'width': 1
 		},{
-		'edge': (7, 9),
-		'weight': 1,
-  	'width': 1
-		},{
-		'edge': (9, 11),
+		'edge': (7, 11),
 		'weight': 1,
   	'width': 1
 		},{
@@ -84,6 +81,22 @@ def main():
   	'width': 1
 		},{
 		'edge': (10, 12),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (11, 7),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (10, 13),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (13, 9),
+		'weight': 1,
+  	'width': 1
+		},{
+		'edge': (9, 14),
 		'weight': 1,
   	'width': 1
 		}
@@ -103,11 +116,12 @@ def main():
 	visualizers.create_graph()
 
 	# Main loop
-	initVehicle = [{
-		'begin': 7,
-		'end': 8,
+	initVehicle = [
+   {
+		'begin': 1,
+		'end': 14,
 		'type': 'bike'
-	}]
+	 }]
 	# },
 	# {
 	# 	'begin': 1,
@@ -140,8 +154,11 @@ def main():
 	for veh in initVehicle:
 		# random the color
 		color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-		var.vehicles.append(vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, veh['begin'], veh['end']))
- 
+		newVeh = vehicle.Vehicle((var.edgeWidth, var.edgeWidth), color, veh['begin'], veh['end'])
+		print(newVeh.next_target == newVeh.position)
+		if not newVeh.next_target == newVeh.position:
+			var.vehicles.append(newVeh)
+   
 	running = True
 	while running:
 		for event in var.pyptr.event.get():
