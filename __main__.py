@@ -25,6 +25,11 @@ def main():
 		6: (200, 600),
 		7: (600, 100),
 		8: (600, 600),
+		9: (800, 100),
+		10: (800, 600),
+		11: (900, 100),
+		12: (900, 600),
+		13: (1000, 100),
 		}
 	var.edge_list = [{
 		'edge': (1, 3),
@@ -67,7 +72,7 @@ def main():
 	visualizers.create_graph()
 
 	# Main loop
-	initCars = [2]
+	initCars = [1, 1, 1]
 	var.vehicles = []
  	# Create vehicles with initial positions
 	for i in initCars:

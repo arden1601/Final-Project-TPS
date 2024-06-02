@@ -9,21 +9,53 @@ intolerance = var.edgeWidth // 3
 
 class Vehicle:
   def __init__(self, shape, color, start_position, final_target):
+    # Djikstra to find the next target
+    try:
+      self.next_target = generate_shortest_path(start_position, final_target)[1]
+    except nx.NetworkXNoPath:
+      # Kill the vehicle if there is no path
+      var.vehicles.remove(self)
+    
     # Find the position node location
     spawn = var.node_positions[start_position]
     self.x = spawn[0] - shape[0] // 2
     self.y = spawn[1] - shape[1] // 2
+    
+    # Check if the vehicle is spawned colliding with another vehicle
+    while any(
+      v.x - v.width // 2 < self.x + shape[0] + intolerance and
+      v.x + v.width // 2 > self.x - intolerance and
+      v.y - v.height // 2 < self.y + shape[1] + intolerance and
+      v.y + v.height // 2 > self.y - intolerance
+      for v in var.vehicles
+    ):
+      # Check if the next target requires a horizontal or vertical movement
+      replacement = intolerance
+      if var.node_positions[self.next_target][0] == var.node_positions[start_position][0]:
+        # Vertical, move the vehicle the opposite direction
+        if var.node_positions[self.next_target][1] > var.node_positions[start_position][1]:
+          # Move up
+          self.y -= replacement
+        else:
+          # Move down
+          self.y += replacement
+      else:
+        # Horizontal, move the vehicle the opposite direction
+        if var.node_positions[self.next_target][0] > var.node_positions[start_position][0]:
+          # Move left
+          self.x -= replacement
+        else:
+          # Move right
+          self.x += replacement
+    
+    # Set the vehicle properties
     self.position = start_position
     self.dx = 0
     self.dy = 0
     self.width = shape[0]
     self.height = shape[1]
     self.color = color
-    try:
-      self.next_target = generate_shortest_path(start_position, final_target)[1]
-    except nx.NetworkXNoPath:
-      # Kill the vehicle if there is no path
-      var.vehicles.remove(self)
+      
     # add weight to the next target
     var.G[start_position][self.next_target]['weight'] = var.G[start_position][self.next_target]['weight'] + 1
     
