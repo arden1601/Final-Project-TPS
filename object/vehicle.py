@@ -230,11 +230,11 @@ class Vehicle:
       self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.veh, 180)
       self.veh = rotate_image
-    elif self.veh_direction == 'right':
+    elif self.veh_direction == 'left':
       self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.veh, 90)
       self.veh = rotate_image
-    elif self.veh_direction == 'left':
+    elif self.veh_direction == 'right':
       self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.veh, 270)
       self.veh = rotate_image
