@@ -2,10 +2,17 @@ import configs.variables as var
 import networkx as nx
 
 def create_graph():
-  G = nx.DiGraph()
-  for edge in var.edge_list:
-    G.add_edge(*edge['edge'], weight=edge['weight'])
-  var.G = G
+  unique_widths = {edge['width'] for edge in var.edge_list}
+  for widths in unique_widths:
+    G = nx.DiGraph()
+    for edge in var.edge_list:
+      if edge['width'] >= widths:
+        G.add_edge(*edge['edge'], weight=edge['weight'])
+    
+    var.G.append({
+      'graph': G,
+      'width': widths
+    })
 
 def draw_graph():
   color = var.colors
@@ -15,7 +22,8 @@ def draw_graph():
   # Draw edges
   node_positions = var.node_positions
   
-  for idx, edge in enumerate(var.G.edges()):
+  usedG = var.G[0]['graph']
+  for idx, edge in enumerate(usedG.edges()):
     # Get start and end positions
     start_pos = node_positions[edge[0]]
     end_pos = node_positions[edge[1]]
@@ -63,13 +71,13 @@ def draw_graph():
     win.blit(text, (pos[0] - 5 + var.viewMargin[0], pos[1] - 8 + var.viewMargin[1])) # -5 and -8 are offsets to center the text
     
   # Draw weights
-  for edge in var.G.edges():
+  for edge in usedG.edges():
     # Get start and end positions
     start_pos = node_positions[edge[0]]
     end_pos = node_positions[edge[1]]
     
     # Get weight
-    weight = var.G[edge[0]][edge[1]]['weight']
+    weight = usedG[edge[0]][edge[1]]['weight']
     
     # Draw weight
     font = var.pyptr.font.Font(None, 24)

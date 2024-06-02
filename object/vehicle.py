@@ -1,19 +1,27 @@
 import configs.variables as var
 import networkx as nx
 
-def generate_shortest_path(source, target):
-  return nx.dijkstra_path(var.G, source, target)
+def generate_shortest_path(source, target, width):
+  # Find G with the width
+  for G in var.G:
+    if G['width'] >= width:
+      return nx.dijkstra_path(G['graph'], source, target)
+
+def generate_width_required(type):
+  if type == 'bike':
+    return 1
+  elif type == 'car':
+    return 2
 
 half_road = var.edgeWidth // 2
 intolerance = var.edgeWidth // 3
 
-
-
 class Vehicle:
   def __init__(self, shape, color, type, start_position, final_target):
     # Djikstra to find the next target
+    self.type = type
     try:
-      self.next_target = generate_shortest_path(start_position, final_target)[1]
+      self.next_target = generate_shortest_path(start_position, final_target, generate_width_required(self.type))[1]
     except nx.NetworkXNoPath:
       self.next_target = start_position
     
@@ -74,7 +82,7 @@ class Vehicle:
     self.width = shape[0]
     self.height = shape[1]
     self.color = color
-    self.type = type
+    
     try:
       if self.type == 'bike':
         self.veh_img = var.pyptr.image.load('./assets/bike.png')
@@ -86,7 +94,7 @@ class Vehicle:
       
     # add weight to the next target only if the next target is not the current target
     if not (self.next_target == self.position):
-      var.G[start_position][self.next_target]['weight'] = var.G[start_position][self.next_target]['weight'] + 1
+      var.G[0]['graph'][start_position][self.next_target]['weight'] = var.G[0]['graph'][start_position][self.next_target]['weight'] + 1
     
     self.final_target = final_target
     self.speed = 0.5
@@ -149,22 +157,22 @@ class Vehicle:
     if self.dx == 0 and self.dy == 0 and not prevRevert:
       if not (self.next_target == self.final_target):
         # remove the previous weight
-        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
+        var.G[0]['graph'][self.position][self.next_target]['weight'] = var.G[0]['graph'][self.position][self.next_target]['weight'] - 1
         
         # Switch to the next target
         self.prevIncoming = self.incoming
         self.position = self.next_target
-        self.next_target = generate_shortest_path(self.next_target, self.final_target)[1]
+        self.next_target = generate_shortest_path(self.next_target, self.final_target, generate_width_required(self.type))[1]
         # Reset the direction
         self.incoming = self.direction()
         if self.revertLine():
           self.reverting = True  
         
         # add weight to the next target if it is not the final target
-        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] + 1
+        var.G[0]['graph'][self.position][self.next_target]['weight'] = var.G[0]['graph'][self.position][self.next_target]['weight'] + 1
       else:
         # remove the previous weight
-        var.G[self.position][self.next_target]['weight'] = var.G[self.position][self.next_target]['weight'] - 1
+        var.G[0]['graph'][self.position][self.next_target]['weight'] = var.G[0]['graph'][self.position][self.next_target]['weight'] - 1
         
         # remove the vehicle
         var.vehicles.remove(self)
