@@ -7,6 +7,8 @@ def generate_shortest_path(source, target):
 half_road = var.edgeWidth // 2
 intolerance = var.edgeWidth // 3
 
+
+
 class Vehicle:
   def __init__(self, shape, color, start_position, final_target):
     # Djikstra to find the next target
@@ -55,6 +57,8 @@ class Vehicle:
     self.width = shape[0]
     self.height = shape[1]
     self.color = color
+    car_img = var.pyptr.image.load('./assets/Audi.png')
+    self.car = var.pyptr.transform.scale(car_img, (self.width, self.height))
       
     # add weight to the next target
     var.G[start_position][self.next_target]['weight'] = var.G[start_position][self.next_target]['weight'] + 1
@@ -116,4 +120,5 @@ class Vehicle:
         var.vehicles.remove(self)
 
   def draw(self, screen):
-    var.pyptr.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+    # var.pyptr.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+    screen.blit(self.car, (self.x, self.y))
