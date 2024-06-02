@@ -72,7 +72,7 @@ def main():
 	visualizers.create_graph()
 
 	# Main loop
-	initCars = [1, 1, 1]
+	initCars = [1, 1, 1, 2, 2, 2, 2, 2, 2]
 	var.vehicles = []
  	# Create vehicles with initial positions
 	for i in initCars:
