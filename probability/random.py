@@ -26,12 +26,14 @@ def random_vehicle():
   max_node = max(var.node_positions.keys())
   
   # random type
-  random_type = random.choice(['bike', 'car'])
+  random_type = random.choice([veh['name'] for veh in var.veh_choices])
   
   while True:
     # random begin
-    random_begin = random.randint(1, max_node) if len(var.busy_node) == 0 else random.choice(var.busy_node)
-    while random_begin in var.busy_node:
+    busy_node = [node['node'] for node in var.node_occupy]
+    
+    random_begin = random.randint(1, max_node) if len(var.node_occupy) == 0 else random.choice(busy_node)
+    while random_begin in busy_node:
       random_begin = random.randint(1, max_node)
     
     # random end not equal to random begin

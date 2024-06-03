@@ -8,10 +8,10 @@ def generate_shortest_path(source, target, width):
       return nx.dijkstra_path(G['graph'], source, target)
 
 def generate_width_required(type):
-  if type == 'bike':
-    return 1
-  elif type == 'car':
-    return 2
+  # Iterate over the veh_choices
+  for veh in var.veh_choices:
+    if veh['name'] == type:
+      return veh['width']
 
 def recount_quota():
   # Loop for each edge
@@ -42,9 +42,6 @@ def recount_quota():
 def check_nodes_contain_vehicle():
   # Loop for each nodes
   for node, pos in var.node_positions.items():
-    if node in var.busy_node:
-      var.busy_node.remove(node)
-    
     pos_new = (pos[0] + var.viewMargin[0], pos[1] + var.viewMargin[1])
     
     x1, y1 = pos_new[0] - var.edgeWidth*1.4, pos_new[1] - var.edgeWidth*1.4
@@ -54,22 +51,34 @@ def check_nodes_contain_vehicle():
     gonnaAppend = False
     
     # Check if the node contains a vehicle
+    save_veh = None
     for veh in var.vehicles:
+      # check if the vehicle exists in node_occupy
+      if any([node_occupy['vehicle'] == veh for node_occupy in var.node_occupy]):
+        continue
+      
       x, y = veh.x + var.viewMargin[0], veh.y + var.viewMargin[1]
       x_most, y_most = x + veh.width, y + veh.height
       
       if (x >= x1 and x <= x2) and (y >= y1 and y <= y2):
         gonnaAppend = True
+        save_veh = veh
         break
       elif (x_most >= x1 and x_most <= x2) and (y_most >= y1 and y_most <= y2):
         gonnaAppend = True
+        save_veh = veh
         break
       elif (x >= x1 and x <= x2) and (y_most >= y1 and y_most <= y2):
         gonnaAppend = True
+        save_veh = veh
         break
       elif (x_most >= x1 and x_most <= x2) and (y >= y1 and y <= y2):
         gonnaAppend = True
+        save_veh = veh
         break
       
     if gonnaAppend:
-      var.busy_node.append(node)
+      var.node_occupy.append({
+        'node': node,
+        'vehicle': save_veh,
+      })

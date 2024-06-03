@@ -75,18 +75,26 @@ class Vehicle:
     self.dy = 0
     self.width = shape[0]
     self.height = shape[1]
+    self.showWidth = self.width
+    self.showHeight = self.height
     self.color = color
+    self.veh_img = None
+    self.gonnaOccupied = False
+    self.insideOccupied = False
     
     try:
-      if self.type == 'bike':
-        self.veh_img = var.pyptr.image.load('./assets/bike.png')
-      elif self.type == 'car':
-        self.veh_img = var.pyptr.image.load('./assets/car.png')
-        self.width *= 1.4
-        self.height *= 1.4
+      # iterate through the veh_options
+      for veh_option in var.veh_choices:
+        # check if the vehicle type is in the veh_options
+        if self.type == veh_option['name']:
+          # load the image
+          self.veh_img = var.pyptr.image.load(veh_option['img'])
+          break
+      
     except:
       print('Error loading the vehicle image')
-    self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
+    
+    self.veh = var.pyptr.transform.scale(self.veh_img, (self.width, self.height))
       
     # add weight to the next target only if the next target is not the current target
     if not (self.next_target == self.position):
@@ -116,51 +124,170 @@ class Vehicle:
     # revert handler
     prevRevert = self.reverting
     multiplier = -1 if not self.reverting else 1
-    if direction == 'up' and self.y == target[1] - var.gap // 2 - self.height * multiplier:
+    positionHandler = self.height
+    
+    if direction == 'up' and self.y == target[1] - var.gap // 2 - positionHandler * multiplier:
       empty_dx_dy()
-    elif direction == 'down' and self.y == target[1] - var.gap // 2 + self.height * multiplier:
+    elif direction == 'down' and self.y == target[1] - var.gap // 2 + positionHandler * multiplier:
       empty_dx_dy()
-    elif direction == 'left' and self.x == target[0] - var.gap // 2 - self.width * multiplier:
+    elif direction == 'left' and self.x == target[0] - var.gap // 2 - positionHandler * multiplier:
       empty_dx_dy()
-    elif direction == 'right' and self.x == target[0] - var.gap // 2 + self.width * multiplier:
+    elif direction == 'right' and self.x == target[0] - var.gap // 2 + positionHandler * multiplier:
       empty_dx_dy()
   
     # check if the next movement could collide with another vehicle
     next_x = self.x + self.dx * self.speed
     next_y = self.y + self.dy * self.speed
 
-    # define 4 points of the vehicle
     coor_x = next_x + var.viewMargin[0]
     coor_y = next_y + var.viewMargin[1]
+
+    # define 4 points of the current vehicle in the next movement
     top_left = (coor_x, coor_y)
-    top_right = (coor_x + self.width, coor_y)
-    bottom_left = (coor_x, coor_y + self.height)
-    bottom_right = (coor_x + self.width, coor_y + self.height)
+    top_right = (coor_x + self.showWidth, coor_y)
+    bottom_left = (coor_x, coor_y + self.showHeight)
+    bottom_right = (coor_x + self.showWidth, coor_y + self.showHeight)
+    
+    # draw box around the vehicle
+    if var.show_node_boxes:
+      # get the config of the current vehicle type
+      opt = None
+      for veh_option in var.veh_choices:
+        if self.type == veh_option['name']:
+          opt = veh_option
+          break
+      
+      # revert direction handler
+      if not self.reverting:
+        self.showWidth = self.width * opt['w-scale']
+        self.showHeight = self.height * opt['h-scale']
+        
+        dir = self.direction()
+        if dir == 'up' or dir == 'down':
+          self.showWidth, self.showHeight = self.showHeight, self.showWidth
+      
+      var.pyptr.draw.rect(
+        var.win,
+        var.colors['GREEN'],
+        var.pyptr.Rect(
+          top_left[0],
+          top_left[1],
+          self.showWidth,
+          self.showHeight
+        ),
+        2
+      )
+      
+    # check if the vehicle is going to hit busy nodes
+    self.gonnaOccupied = False
+    self.insideOccupied = False
+    for occupy in var.node_occupy:
+      node = occupy['node']
+      
+      # get the node position
+      pos = var.node_positions[node]
+      
+      occupy_addr = None
+      # Find the node in node_occupy
+      for addr in var.node_occupy:
+        if addr['node'] == node:
+          occupy_addr = addr
+          break
+      
+      if occupy_addr == None:
+        break
+      
+      # check if the vehicle is going to hit the node
+      if (
+        top_left[0] < pos[0] + var.viewMargin[0] + var.edgeWidth*1.4 and
+        pos[0] + var.viewMargin[0] - var.edgeWidth*1.4 < top_right[0] and
+        top_left[1] < pos[1] + var.viewMargin[1] + var.edgeWidth*1.4 and
+        pos[1] + var.viewMargin[1] - var.edgeWidth*1.4 < bottom_left[1]
+      ):
+        self.gonnaOccupied = True
+        
+        # Check if the vehicle is standing on a node that assigned to itself
+        if occupy_addr['vehicle'] == self:
+          # print('Vehicle is standing on a node that assigned to itself')
+          self.insideOccupied = True
+        else:
+          # print('Vehicle is standing on a node that assigned to another vehicle')
+          return
+    
+    # if the vehicle is not going to hit the busy nodes, remove the vehicle from the node_occupy
+    if not self.gonnaOccupied:
+      self.clearOccupation()
     
     # check if the vehicle is going to hit another vehicle
     for v in var.vehicles:
       if v == self:
         continue
       
-      # define 4 points of the vehicle
+      # define 4 points of the vehicle compared
       coor_x = v.x + var.viewMargin[0]
       coor_y = v.y + var.viewMargin[1]
       top_left_v = (coor_x, coor_y)
-      top_right_v = (coor_x + v.width, coor_y)
-      bottom_left_v = (coor_x, coor_y + v.height)
-      bottom_right_v = (coor_x + v.width, coor_y + v.height)
+      top_right_v = (coor_x + v.showWidth, coor_y)
+      bottom_left_v = (coor_x, coor_y + v.showHeight)
+      bottom_right_v = (coor_x + v.showWidth, coor_y + v.showHeight)
       
-      # check if the vehicle is going to hit another vehicle
-      if (
+      # check if the vehicle is going to hit another vehicle based on the direction
+      myDir = self.direction()
+      if myDir == 'up' and (
         top_left[0] < top_right_v[0] and
         top_right[0] > top_left_v[0] and
         top_left[1] < bottom_left_v[1] and
-        bottom_left[1] > top_left_v[1] and
-        top_left[0] < bottom_right_v[0] and
-        bottom_right[0] > top_left_v[0] and
-        top_left[1] < bottom_right_v[1] and
-        bottom_right[1] > top_left_v[1]
+        bottom_left[1] > top_left_v[1]
       ):
+        # ignore if the vehicle or other is not inside the occupied node
+        if self.insideOccupied:
+          # if the next vehicle turns out to have the same target, collide with the vehicle
+          if v.direction() == self.direction():
+            return
+          continue
+        
+        return
+      elif myDir == 'down' and (
+        top_left[0] < top_right_v[0] and
+        top_right[0] > top_left_v[0] and
+        top_left[1] < bottom_left_v[1] and
+        bottom_left[1] > top_left_v[1]
+      ):
+        # ignore if the vehicle or other is not inside the occupied node
+        if self.insideOccupied:
+          # if the next vehicle turns out to have the same target, collide with the vehicle
+          if v.direction() == self.direction():
+            return
+          continue
+        
+        return
+      elif myDir == 'left' and (
+        top_left[0] < top_right_v[0] and
+        top_right[0] > top_left_v[0] and
+        top_left[1] < bottom_left_v[1] and
+        bottom_left[1] > top_left_v[1]
+      ):
+        # ignore if the vehicle or other is not inside the occupied node
+        if self.insideOccupied:
+          # if the next vehicle turns out to have the same target, collide with the vehicle
+          if v.direction() == self.direction():
+            return
+          continue
+        
+        return
+      elif myDir == 'right' and (
+        top_left[0] < top_right_v[0] and
+        top_right[0] > top_left_v[0] and
+        top_left[1] < bottom_left_v[1] and
+        bottom_left[1] > top_left_v[1]
+      ):
+        # ignore if the vehicle or other is not inside the occupied node
+        if self.insideOccupied:
+          # if the next vehicle turns out to have the same target, collide with the vehicle
+          if v.direction() == self.direction():
+            return
+          continue
+        
         return
       
     # check if the next movement exceeds the target
@@ -211,12 +338,17 @@ class Vehicle:
         
         # remove the vehicle
         var.vehicles.remove(self)
-        end_time = time.time()
-        self.time_taken = end_time - self.start_time
-        var.time_taken.append(self.time_taken)
-        # print(f'Vehicle reached the final target in {end_time - self.start_time} seconds')
+        
+        # remove the vehicle from the node_occupy
+        self.clearOccupation()
+        
         # recount the quota
         extras.recount_quota()
+
+  def clearOccupation(self):
+    for addr in var.node_occupy:
+        if addr['vehicle'] == self:
+          var.node_occupy.remove(addr)
 
   def movDir(self, direction):
     if direction == 'up':
@@ -254,7 +386,7 @@ class Vehicle:
       
   def handle_direction(self):
     if self.veh_direction == 'down':
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.height , self.width))
       rotate_image = var.pyptr.transform.rotate(self.veh, 180)
       self.veh = rotate_image
     elif self.veh_direction == 'left':
@@ -265,8 +397,8 @@ class Vehicle:
       self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.veh, 270)
       self.veh = rotate_image
-    else:
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
+    elif self.veh_direction == 'up':
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.height , self.width))
 
   def revertLine(self):
     # Check if the vehicle is going horizontal or vertical
@@ -296,4 +428,14 @@ class Vehicle:
     if not self.reverting:
       self.handle_direction()
       
-    screen.blit(self.veh, (self.x - 5 + var.viewMargin[0], self.y - 5 + var.viewMargin[1]))
+    # find the object config from the vehicle options
+    opt = None
+    for veh_option in var.veh_choices:
+      if self.type == veh_option['name']:
+        opt = veh_option
+        break
+    
+    draw_hori = self.x + var.viewMargin[0] - (self.width // opt['w-scale'] - var.edgeWidth) // 2
+    draw_vert = self.y + var.viewMargin[1] - (self.height // opt['h-scale'] - var.edgeWidth) // 2
+    
+    screen.blit(self.veh, (draw_hori, draw_vert))

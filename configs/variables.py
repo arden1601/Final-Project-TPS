@@ -45,6 +45,7 @@ viewMargin = (50, 50)
 node_positions = {}
 edge_list = []
 busy_node = []
+node_occupy = []
 
 def getEdgeLength(start, stop):
   target_edge = (start, stop)
@@ -77,6 +78,22 @@ def getEdgeLength(start, stop):
 vehicles = []
 gigaNumber = 999999
 max_vehicles = 30
+veh_choices = [
+  {
+    'name': 'bike',
+    'width': 1,
+    'img': './assets/bike.png',
+    'w-scale': 1,
+    'h-scale': 1
+  },
+  {
+    'name': 'car',
+    'width': 2,
+    'img': './assets/car.png',
+    'w-scale': 2,
+    'h-scale': 1
+  }
+]
 
 # Average Time
 time_taken = []
@@ -88,7 +105,8 @@ colors = {
   'BLUE': (0, 0, 255),
   'RED': (255, 0, 0),
   'GREEN': (0, 255, 0),
-  'GRAY': (127, 127, 127)
+  'GRAY': (127, 127, 127),
+  'YELLOW': (255, 255, 0),
 }
 
 # Visualizers

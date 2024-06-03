@@ -130,9 +130,7 @@ def draw_vehicles():
     vehicle.goToTarget()
     vehicle.draw(var.win)
     
-    # draw box around the vehicle
-    if var.show_boxes:
-      var.pyptr.draw.rect(var.win, var.colors['BLACK'], var.pyptr.Rect(vehicle.x + var.viewMargin[0], vehicle.y + var.viewMargin[1], vehicle.width, vehicle.height), 2)
+  # draw box is inside the Vehicle object goToTarget method
 
 def draw_the_road():
   strip = var.pyptr.image.load('./assets/yellow_strip.jpg')
@@ -194,7 +192,8 @@ def draw_vehicles_count():
   var.howManyStats += 1
 
 def draw_busy():
-  for node in var.busy_node:
+  for occupy in var.node_occupy:
+    node = occupy['node']
     pos = var.node_positions[node]
     pos_new = (pos[0] + var.viewMargin[0], pos[1] + var.viewMargin[1])
     
