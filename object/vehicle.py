@@ -75,10 +75,9 @@ class Vehicle:
     try:
       if self.type == 'bike':
         self.veh_img = var.pyptr.image.load('./assets/bike.png')
-        self.veh_width = 20
       elif self.type == 'car':
         self.veh_img = var.pyptr.image.load('./assets/car.png')
-        self.veh_width = 40
+        self.width *= 2
     except:
       print('Error loading the vehicle image')
     self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
@@ -281,19 +280,19 @@ class Vehicle:
       
   def handle_direction(self):
     if self.veh_direction == 'down':
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.veh_width , self.veh_width))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.veh, 180)
       self.veh = rotate_image
     elif self.veh_direction == 'left':
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.veh_width , self.veh_width))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.veh, 90)
       self.veh = rotate_image
     elif self.veh_direction == 'right':
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.veh_width , self.veh_width))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       rotate_image = var.pyptr.transform.rotate(self.veh, 270)
       self.veh = rotate_image
     else:
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.veh_width , self.veh_width))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
 
   def revertLine(self):
     # Check if the vehicle is going horizontal or vertical
@@ -322,8 +321,5 @@ class Vehicle:
     
     if not self.reverting:
       self.handle_direction()
-    
-    if self.veh_width == 40:
-      screen.blit(self.veh, (self.x + var.viewMargin[0] - 10, self.y + var.viewMargin[1] - 10))
-    else:
-      screen.blit(self.veh, (self.x + var.viewMargin[0], self.y + var.viewMargin[1] ))
+      
+    screen.blit(self.veh, (self.x + var.viewMargin[0], self.y + var.viewMargin[1] ))

@@ -1,6 +1,28 @@
-# Showing what?
+# Showing what in weights?
 show_opt = ['quota', 'vehicles', 'weight']
 show = show_opt[-1]
+
+# Show the boxes to vehicles?
+show_boxes = True
+
+# Show the busy nodes?
+show_busy = True
+
+# Show the road?
+show_road = False
+
+# Show node boxes?
+show_node_boxes = True
+
+
+
+
+
+
+
+
+
+
 
 # Screen Properties
 width, height = 0, 0

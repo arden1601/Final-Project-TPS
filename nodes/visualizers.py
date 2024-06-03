@@ -55,15 +55,16 @@ def draw_nodes():
     var.pyptr.draw.circle(var.win, var.colors['BLUE'], pos_new, var.edgeWidth*1.4)
     
     # Draw a square surrounding the circle
-    var.pyptr.draw.rect(
-      var.win,
-      var.colors['BLACK'],
-      var.pyptr.Rect(
-        pos_new[0] - var.edgeWidth*1.4,
-        pos_new[1] - var.edgeWidth*1.4,
-        var.edgeWidth*2.8,
-        var.edgeWidth*2.8),
-      2)
+    if var.show_node_boxes:
+      var.pyptr.draw.rect(
+        var.win,
+        var.colors['BLACK'],
+        var.pyptr.Rect(
+          pos_new[0] - var.edgeWidth*1.4,
+          pos_new[1] - var.edgeWidth*1.4,
+          var.edgeWidth*2.8,
+          var.edgeWidth*2.8),
+        2)
     
     # Draw node number
     font = var.pyptr.font.Font(None, 24)
@@ -128,6 +129,10 @@ def draw_vehicles():
   for vehicle in var.vehicles:
     vehicle.goToTarget()
     vehicle.draw(var.win)
+    
+    # draw box around the vehicle
+    if var.show_boxes:
+      var.pyptr.draw.rect(var.win, var.colors['BLACK'], var.pyptr.Rect(vehicle.x + var.viewMargin[0], vehicle.y + var.viewMargin[1], vehicle.width, vehicle.height), 2)
 
 def draw_the_road():
   strip = var.pyptr.image.load('./assets/yellow_strip.jpg')
@@ -184,7 +189,12 @@ def visualizeEverything():
   draw_edges()
   draw_nodes()
   draw_weights()
-  draw_busy()
-  # draw_the_road()
+  
+  if var.show_busy:
+    draw_busy()
+  
+  if var.show_road:
+    draw_the_road()
+    
   draw_vehicles()
   draw_clock()
