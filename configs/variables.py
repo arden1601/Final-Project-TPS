@@ -78,6 +78,9 @@ vehicles = []
 gigaNumber = 999999
 max_vehicles = 30
 
+# Average Time
+time_taken = []
+avg_time = 0
 # Colors
 colors = {
   'WHITE': (255, 255, 255),

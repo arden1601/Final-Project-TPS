@@ -1,12 +1,15 @@
 import configs.variables as var
 import networkx as nx
 import configs.extras as extras
+import time
 
 half_road = var.edgeWidth // 2
 intolerance = var.edgeWidth // 3
 
 class Vehicle:
   def __init__(self, shape, color, type, start_position, final_target):
+    self.start_time = time.time() 
+    self.time_taken = 0
     # Djikstra to find the next target
     self.type = type
     try:
@@ -208,7 +211,10 @@ class Vehicle:
         
         # remove the vehicle
         var.vehicles.remove(self)
-        
+        end_time = time.time()
+        self.time_taken = end_time - self.start_time
+        var.time_taken.append(self.time_taken)
+        # print(f'Vehicle reached the final target in {end_time - self.start_time} seconds')
         # recount the quota
         extras.recount_quota()
 

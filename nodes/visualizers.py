@@ -179,6 +179,12 @@ def draw_clock():
   var.win.blit(text, (var.width - var.viewMargin[0]*2, (var.viewMargin[1]) + var.howManyStats * var.statsGap))
   
   var.howManyStats += 1
+  
+def draw_avg_time():
+  font = var.pyptr.font.Font(None, 24)
+  avg_time = sum(var.time_taken) / len(var.time_taken) if len(var.time_taken) > 0 else 0
+  text = font.render(str("Avg Time: " + str(avg_time)), True, var.colors['BLACK'])
+  var.win.blit(text, (600,50 ))
 
 def draw_vehicles_count():
   font = var.pyptr.font.Font(None, 24)
@@ -203,6 +209,7 @@ def visualizeEverything():
   draw_edges()
   draw_nodes()
   draw_weights()
+  draw_avg_time()
   
   if var.show_busy:
     draw_busy()
