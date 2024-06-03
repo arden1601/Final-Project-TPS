@@ -389,6 +389,8 @@ class Vehicle:
         # remove the vehicle from the node_occupy
         self.clearOccupation()
         
+        
+        
         # recount the quota
         extras.recount_quota()
 
