@@ -26,7 +26,7 @@ def random_vehicle():
   max_node = max(var.node_positions.keys())
   
   # random type
-  random_type = random.choice(['bike'])
+  random_type = random.choice(['bike', 'car'])
   
   while True:
     # random begin
@@ -49,7 +49,7 @@ def random_vehicle():
   # create a random vehicle
   veh = {
     'begin': random_begin,
-    'end': random_end,
+    'end': 11,
     'type': random_type
   }
   
