@@ -191,6 +191,7 @@ def draw_vehicles_count():
   
   var.howManyStats += 1
 
+
 def draw_busy():
   for occupy in var.node_occupy:
     node = occupy['node']
