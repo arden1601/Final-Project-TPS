@@ -197,6 +197,22 @@ class Vehicle:
       if occupy_addr == None:
         break
       
+      # check if the vehicle is currently inside the node
+      # real 4 current position
+      top_left_real = (self.x, self.y)
+      top_right_real = (self.x + self.showWidth, self.y)
+      bottom_left_real = (self.x, self.y + self.showHeight)
+      
+      # check if the vehicle is going to hit the node
+      if (
+        # use real position
+        top_left_real[0] < pos[0] + var.viewMargin[0] + var.edgeWidth*1.4 and
+        pos[0] + var.viewMargin[0] - var.edgeWidth*1.4 < top_right_real[0] and
+        top_left_real[1] < pos[1] + var.viewMargin[1] + var.edgeWidth*1.4 and
+        pos[1] + var.viewMargin[1] - var.edgeWidth*1.4 < bottom_left_real[1]
+      ):
+        self.insideOccupied = True
+      
       # check if the vehicle is going to hit the node
       if (
         top_left[0] < pos[0] + var.viewMargin[0] + var.edgeWidth*1.4 and
@@ -208,10 +224,10 @@ class Vehicle:
         
         # Check if the vehicle is standing on a node that assigned to itself
         if occupy_addr['vehicle'] == self:
-          # print('Vehicle is standing on a node that assigned to itself')
-          self.insideOccupied = True
+          # print('Vehicle is going to stand on a node that assigned to itself')
+          pass
         else:
-          # print('Vehicle is standing on a node that assigned to another vehicle')
+          # print('Vehicle is going to stand on a node that assigned to another vehicle')
           return
     
     # if the vehicle is not going to hit the busy nodes, remove the vehicle from the node_occupy
@@ -231,64 +247,92 @@ class Vehicle:
       bottom_left_v = (coor_x, coor_y + v.showHeight)
       bottom_right_v = (coor_x + v.showWidth, coor_y + v.showHeight)
       
-      # check if the vehicle is going to hit another vehicle based on the direction
+      # check if the vehicle is going to hit another vehicle based on the direction, use top_left_v, top_right_v, bottom_left_v, bottom_right_v
       myDir = self.direction()
-      if myDir == 'up' and (
+      
+      # ensure if the vehicle is facing to front, check only the back side of the vehicle,
+      oppInBack = (
+        (myDir == 'up' and (
+          top_left[1] < bottom_left_v[1] and
+          top_right[1] < bottom_right_v[1] and
+          top_left[0] < bottom_right_v[0] and
+          top_right[0] > bottom_left_v[0]          
+        )) or
+        (myDir == 'down' and (
+          bottom_left[1] > top_left_v[1] and
+          bottom_right[1] > top_right_v[1] and
+          bottom_left[0] < top_right_v[0] and
+          bottom_right[0] > top_left_v[0]
+        )) or
+        (myDir == 'left' and (
+          top_left[0] < top_right_v[0] and
+          bottom_left[0] < bottom_right_v[0] and
+          top_left[1] < bottom_right_v[1] and
+          bottom_left[1] > top_right_v[1]
+        )) or
+        (myDir == 'right' and (
+          top_right[0] > top_left_v[0] and
+          bottom_right[0] > bottom_left_v[0] and
+          top_right[1] < bottom_left_v[1] and
+          bottom_right[1] > top_left_v[1]
+        ))
+      )
+      
+      # distance between the vehicle
+      distance = 0
+      if myDir == 'up':
+        distance = top_left_v[1] - top_left[1]
+      elif myDir == 'down':
+        distance = top_left[1] - top_left_v[1]
+      elif myDir == 'left':
+        distance = top_left_v[0] - top_left[0]
+      elif myDir == 'right':
+        distance = top_left[0] - top_left_v[0]
+      
+      # handle if the next step of current vehicle is going to hit another vehicle
+      if (not oppInBack) and (
         top_left[0] < top_right_v[0] and
         top_right[0] > top_left_v[0] and
-        top_left[1] < bottom_left_v[1] and
-        bottom_left[1] > top_left_v[1]
+        top_left[1] < bottom_right_v[1] and
+        bottom_left[1] > top_right_v[1]
       ):
-        # ignore if the vehicle or other is not inside the occupied node
+        # if the vehicle is inside a busy node, ignore the collision
         if self.insideOccupied:
-          # if the next vehicle turns out to have the same target, collide with the vehicle
-          if v.direction() == self.direction():
-            return
           continue
         
         return
-      elif myDir == 'down' and (
-        top_left[0] < top_right_v[0] and
-        top_right[0] > top_left_v[0] and
-        top_left[1] < bottom_left_v[1] and
-        bottom_left[1] > top_left_v[1]
-      ):
-        # ignore if the vehicle or other is not inside the occupied node
-        if self.insideOccupied:
-          # if the next vehicle turns out to have the same target, collide with the vehicle
-          if v.direction() == self.direction():
-            return
-          continue
-        
-        return
-      elif myDir == 'left' and (
-        top_left[0] < top_right_v[0] and
-        top_right[0] > top_left_v[0] and
-        top_left[1] < bottom_left_v[1] and
-        bottom_left[1] > top_left_v[1]
-      ):
-        # ignore if the vehicle or other is not inside the occupied node
-        if self.insideOccupied:
-          # if the next vehicle turns out to have the same target, collide with the vehicle
-          if v.direction() == self.direction():
-            return
-          continue
-        
-        return
-      elif myDir == 'right' and (
-        top_left[0] < top_right_v[0] and
-        top_right[0] > top_left_v[0] and
-        top_left[1] < bottom_left_v[1] and
-        bottom_left[1] > top_left_v[1]
-      ):
-        # ignore if the vehicle or other is not inside the occupied node
-        if self.insideOccupied:
-          # if the next vehicle turns out to have the same target, collide with the vehicle
-          if v.direction() == self.direction():
-            return
-          continue
-        
-        return
+      
+      # handle if the other vehicle is in the back of the current vehicle
+      if oppInBack:
+        if distance < intolerance and self.direction() == v.direction():
+          # draw YELLOW box around the vehicle that causes self to stop
+          if var.show_node_boxes:
+            var.pyptr.draw.rect(
+              var.win,
+              var.colors['YELLOW'],
+              var.pyptr.Rect(
+                top_left_v[0],
+                top_left_v[1],
+                v.showWidth,
+                v.showHeight
+              ),
+              2
+            )
+            
+          # draw BLUE box around the vehicle that is going to stop
+          if var.show_node_boxes:
+            var.pyptr.draw.rect(
+              var.win,
+              var.colors['BLUE'],
+              var.pyptr.Rect(
+                top_left[0],
+                top_left[1],
+                self.showWidth,
+                self.showHeight
+              ),
+              2
+            )
+          return
       
     # check if the next movement exceeds the target
     if direction == 'up' and next_y < target[1] - var.gap // 2 - self.height * multiplier:
