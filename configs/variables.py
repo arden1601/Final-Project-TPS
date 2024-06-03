@@ -9,10 +9,10 @@ show_boxes = True
 show_busy = True
 
 # Show the road?
-show_road = False
+show_road = True
 
 # Show node boxes?
-show_node_boxes = True
+show_node_boxes = False
 
 # Show the clock
 show_clock = True
@@ -90,7 +90,7 @@ veh_choices = [
     'name': 'car',
     'width': 2,
     'img': './assets/car.png',
-    'w-scale': 2,
+    'w-scale': 3,
     'h-scale': 1
   }
 ]

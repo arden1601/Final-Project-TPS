@@ -94,14 +94,14 @@ class Vehicle:
     except:
       print('Error loading the vehicle image')
     
-    self.veh = var.pyptr.transform.scale(self.veh_img, (self.width, self.height))
+    self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
       
     # add weight to the next target only if the next target is not the current target
     if not (self.next_target == self.position):
       var.G[0]['graph'][start_position][self.next_target]['weight'] = var.G[0]['graph'][start_position][self.next_target]['weight'] + 1
     
     self.final_target = final_target
-    self.speed = .5 if self.type == 'car' else .8
+    self.speed = 1 if self.type == 'car' else 2
   
   def goToTarget(self):
     # Target direction
@@ -383,7 +383,7 @@ class Vehicle:
         # remove the vehicle
         var.vehicles.remove(self)
         end_time = time.time()
-        self.time_taken = end_time - self.start_time
+        self.time_taken = (end_time - self.start_time)/2 if self.type == 'bike' else (end_time - self.start_time) 
         var.time_taken.append(self.time_taken)
         
         # remove the vehicle from the node_occupy
@@ -434,20 +434,26 @@ class Vehicle:
         return 'left'
       
   def handle_direction(self):
+    props = None
+    for veh_option in var.veh_choices:
+      if self.type == veh_option['name']:
+        props = veh_option
+        break
+    
     if self.veh_direction == 'down':
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.height , self.width))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.height * props['w-scale']  , self.width * props['w-scale']))
       rotate_image = var.pyptr.transform.rotate(self.veh, 180)
       self.veh = rotate_image
     elif self.veh_direction == 'left':
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width  * props['w-scale'], self.height * props['w-scale']))
       rotate_image = var.pyptr.transform.rotate(self.veh, 90)
       self.veh = rotate_image
     elif self.veh_direction == 'right':
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.width  * props['w-scale'], self.height * props['w-scale']))
       rotate_image = var.pyptr.transform.rotate(self.veh, 270)
       self.veh = rotate_image
     elif self.veh_direction == 'up':
-      self.veh = var.pyptr.transform.scale(self.veh_img, (self.height , self.width))
+      self.veh = var.pyptr.transform.scale(self.veh_img, (self.height * props['w-scale'] , self.width * props['w-scale']))
 
   def revertLine(self):
     # Check if the vehicle is going horizontal or vertical
@@ -484,7 +490,19 @@ class Vehicle:
         opt = veh_option
         break
     
-    draw_hori = self.x + var.viewMargin[0] - (self.width // opt['w-scale'] - var.edgeWidth) // 2
-    draw_vert = self.y + var.viewMargin[1] - (self.height // opt['h-scale'] - var.edgeWidth) // 2
+    draw_hori = self.x + var.viewMargin[0] - (self.width * opt['w-scale'] - var.edgeWidth) // 2
+    draw_vert = self.y + var.viewMargin[1] - (self.width * opt['w-scale'] - var.edgeWidth) // 2
     
-    screen.blit(self.veh, (draw_hori, draw_vert))
+    if self.type == 'car':
+      if self.veh_direction == 'down':
+        screen.blit(self.veh, (draw_hori , draw_vert + 20 ))
+      elif self.veh_direction == 'right':
+        screen.blit(self.veh, (draw_hori + 20 , draw_vert ))
+      elif self.veh_direction == 'left':
+        screen.blit(self.veh, (draw_hori + 20 , draw_vert  ))
+      elif self.veh_direction == 'up':
+        screen.blit(self.veh, (draw_hori , draw_vert + 20  ))
+    else:
+      screen.blit(self.veh, (draw_hori , draw_vert ))
+      
+        

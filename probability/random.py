@@ -28,13 +28,14 @@ def random_vehicle():
   # random type
   random_type = random.choice([veh['name'] for veh in var.veh_choices])
   
+  nodes_start = [1,2,5,8,10,13,16]
   while True:
     # random begin
     busy_node = [node['node'] for node in var.node_occupy]
     
-    random_begin = random.randint(1, max_node) if len(var.node_occupy) == 0 else random.choice(busy_node)
+    random_begin = random.choice(nodes_start)  if len(var.node_occupy) == 0 else random.choice(busy_node)
     while random_begin in busy_node:
-      random_begin = random.randint(1, max_node)
+      random_begin = random.randint(1, max_node) 
     
     # random end not equal to random begin
     random_end = random_begin
