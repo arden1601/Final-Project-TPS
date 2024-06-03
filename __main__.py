@@ -14,8 +14,7 @@ def main():
 		time.loop_time()
 		randomvar.trigger_random()
 		extras.check_nodes_contain_vehicle()
-  
-  
+
 		var.pyptr.display.flip()
 		
 		for event in var.pyptr.event.get():

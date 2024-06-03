@@ -125,9 +125,9 @@ def draw_weights():
     
 def draw_vehicles():
   # Move and draw vehicles
-  for vehicleHere in var.vehicles:
-    vehicleHere.goToTarget()
-    vehicleHere.draw(var.win)
+  for vehicle in var.vehicles:
+    vehicle.goToTarget()
+    vehicle.draw(var.win)
 
 def draw_the_road():
   strip = var.pyptr.image.load('./assets/yellow_strip.jpg')

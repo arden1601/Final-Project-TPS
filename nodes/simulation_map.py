@@ -9,7 +9,6 @@ strip_resized = pygame.transform.scale(strip, (25, 25))
 
 white = (255, 255, 255)
 
-
 road_size = 50
 gray = (119, 119, 119)
 
