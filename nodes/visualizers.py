@@ -1,6 +1,8 @@
 import configs.variables as var
 import networkx as nx
 
+
+
 def create_graph():
   unique_widths = {edge['width'] for edge in var.edge_list}
   for widths in unique_widths:
@@ -139,6 +141,7 @@ def draw_the_road():
   strip_vertical = var.pyptr.transform.scale(strip, (25, 25))
   strip_horizontal = var.pyptr.transform.rotate(strip_vertical, 90)
   road_size = var.edgeWidth + 20
+  
   for i in var.edge_list:
     x  = var.var.node_positions[i['edge'][0]][0]
     y  = var.var.node_positions[i['edge'][0]][1]
@@ -147,6 +150,7 @@ def draw_the_road():
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
     var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x - 25 + var.viewMargin[0], y - 30 + var.viewMargin[1], road_size*scale_w + 20, road_size*scale_h + 20))
+  
   # Draw strip Horizontal
   for i in range(0, 1200,50):
     var.win.blit(strip_horizontal, (i + 40, 137))
@@ -172,8 +176,17 @@ def draw_clock():
   clock_min = str(var.clock_min)
   clock = str(0 if var.clock < 10 else '') + clock_hour + ':' + str(0 if var.clock_min < 10 else '') + clock_min
   
-  text = font.render(str(clock), True, var.colors['BLACK'])
-  var.win.blit(text, (var.width - var.viewMargin[0]*2, var.viewMargin[1]))
+  text = font.render(str("Time: " + clock), True, var.colors['BLACK'])
+  var.win.blit(text, (var.width - var.viewMargin[0]*2, (var.viewMargin[1]) + var.howManyStats * var.statsGap))
+  
+  var.howManyStats += 1
+
+def draw_vehicles_count():
+  font = var.pyptr.font.Font(None, 24)
+  text = font.render(str("Vehs: " + str(len(var.vehicles))), True, var.colors['BLACK'])
+  var.win.blit(text, (var.width - var.viewMargin[0]*2, (var.viewMargin[1] + var.howManyStats * var.statsGap)))
+  
+  var.howManyStats += 1
 
 def draw_busy():
   for node in var.busy_node:
@@ -185,6 +198,8 @@ def draw_busy():
     var.pyptr.draw.ellipse(var.win, var.colors['RED'], var.pyptr.Rect(x1, y1, var.edgeWidth*2.8, var.edgeWidth*2.8), 2)
 
 def visualizeEverything():
+  var.howManyStats = 0
+  
   var.win.fill(var.colors['WHITE'])
   draw_edges()
   draw_nodes()
@@ -197,4 +212,9 @@ def visualizeEverything():
     draw_the_road()
     
   draw_vehicles()
-  draw_clock()
+  
+  if var.show_clock:
+    draw_clock()
+  
+  if var.show_vehicle_count:
+    draw_vehicles_count()

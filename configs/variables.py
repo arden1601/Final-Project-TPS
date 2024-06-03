@@ -14,8 +14,11 @@ show_road = False
 # Show node boxes?
 show_node_boxes = True
 
+# Show the clock
+show_clock = True
 
-
+# Show the vehicles count?
+show_vehicle_count = True
 
 
 
@@ -80,6 +83,7 @@ def getEdgeLength(start, stop):
 # Vehicles
 vehicles = []
 gigaNumber = 999999
+max_vehicles = 30
 
 # Colors
 colors = {
@@ -90,3 +94,7 @@ colors = {
   'GREEN': (0, 255, 0),
   'GRAY': (127, 127, 127)
 }
+
+# Visualizers
+howManyStats = 0
+statsGap = 15

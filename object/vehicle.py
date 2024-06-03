@@ -157,41 +157,6 @@ class Vehicle:
       ):
         return
       
-    # check if the vehicle is going to hit the busy node coordinate
-    for node, pos in var.node_positions.items():
-      # if node not busy
-      if node not in var.busy_node:
-        continue
-      
-      # vehicle coordinates
-      x1_veh = next_x + var.viewMargin[0]
-      y1_veh = next_y + var.viewMargin[1]
-      x2_veh = x1_veh + self.width
-      y2_veh = y1_veh + self.height
-      
-      # node coordinates
-      x1_node = pos[0] + var.viewMargin[0] - var.edgeWidth*1.4
-      y1_node = pos[1] + var.viewMargin[1] - var.edgeWidth*1.4
-      x2_node = x1_node + var.edgeWidth*2.8
-      y2_node = y1_node + var.edgeWidth*2.8
-      
-      # check if the vehicle is going to hit the busy node
-      hit = False
-      
-      if (x1_veh >= x1_node and x1_veh <= x2_node) and (y1_veh >= y1_node and y1_veh <= y2_node):
-        hit = True
-      elif (x2_veh >= x1_node and x2_veh <= x2_node) and (y2_veh >= y1_node and y2_veh <= y2_node):
-        hit = True
-      elif (x1_veh >= x1_node and x1_veh <= x2_node) and (y2_veh >= y1_node and y2_veh <= y2_node):
-        hit = True
-      elif (x2_veh >= x1_node and x2_veh <= x2_node) and (y1_veh >= y1_node and y1_veh <= y2_node):
-        hit = True      
-        
-      if hit:
-        # check if the node is busy because of self existence
-        if node != self.position and node != self.next_target:
-          return
-      
     # check if the next movement exceeds the target
     if direction == 'up' and next_y < target[1] - var.gap // 2 - self.height * multiplier:
       self.y = target[1] - var.gap // 2 - self.height * multiplier

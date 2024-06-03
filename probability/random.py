@@ -11,18 +11,22 @@ def add_repeater(name, repeating, start, end, action):
     'delay': repeating,
     'onInterval': (start, end),
     'lastTime': time.time(),
-    'action': lambda: action
+    'action': action,
   })
 
 def init_repater_vehicle():
-  add_repeater('random_vehicle', 1, 0, 24, random_vehicle)
+  add_repeater('random_vehicle', .1, 0, 24, random_vehicle)
 
 def random_vehicle():
+  # check if the vehicle is full
+  if len(var.vehicles) >= var.max_vehicles:
+    return
+  
   # get biggest node value
   max_node = max(var.node_positions.keys())
   
   # random type
-  random_type = random.choice(['car', 'bike'])
+  random_type = random.choice(['bike'])
   
   while True:
     # random begin
@@ -61,7 +65,6 @@ def init_repeaters():
 
 def trigger_random():
   for repeater in var.repeater:
-    if repeater['name'] == 'random_vehicle':
-      if time.time() - repeater['lastTime'] > repeater['delay'] and var.clock >= repeater['onInterval'][0] and var.clock <= repeater['onInterval'][1]:
-        random_vehicle()
-        repeater['lastTime'] = time.time()
+    if time.time() - repeater['lastTime'] > repeater['delay'] and var.clock >= repeater['onInterval'][0] and var.clock <= repeater['onInterval'][1]: 
+      repeater['action']()
+      repeater['lastTime'] = time.time()
