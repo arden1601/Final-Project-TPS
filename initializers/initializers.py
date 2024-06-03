@@ -38,10 +38,10 @@ def initEverything():
 	screen.init_screen() 
 	
 	# Add more edges
-	add_2jalur(7, 8, 1, 2, 2)
+	add_2jalur(7, 8, 1, 1, 1)
 	add_2jalur(7, 9, 1, 2, 2)
 	add_2jalur(7, 12, 1, 2, 2)
-	add_2jalur(12, 13, 1, 1, 2)
+	add_2jalur(12, 13, 1, 1, 1)
 	add_2jalur(12, 14, 1, 2, 2)
 	add_2jalur(14, 15, 1, 2, 2)
 	add_2jalur(14, 15, 1, 2, 2)

@@ -77,7 +77,8 @@ class Vehicle:
         self.veh_img = var.pyptr.image.load('./assets/bike.png')
       elif self.type == 'car':
         self.veh_img = var.pyptr.image.load('./assets/car.png')
-        self.width *= 2
+        self.width *= 1.4
+        self.height *= 1.4
     except:
       print('Error loading the vehicle image')
     self.veh = var.pyptr.transform.scale(self.veh_img, (self.width , self.height))
@@ -287,4 +288,4 @@ class Vehicle:
     if not self.reverting:
       self.handle_direction()
       
-    screen.blit(self.veh, (self.x + var.viewMargin[0], self.y + var.viewMargin[1] ))
+    screen.blit(self.veh, (self.x + var.viewMargin[0], self.y + var.viewMargin[1]))

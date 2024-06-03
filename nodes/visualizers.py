@@ -1,8 +1,6 @@
 import configs.variables as var
 import networkx as nx
 
-
-
 def create_graph():
   unique_widths = {edge['width'] for edge in var.edge_list}
   for widths in unique_widths:
@@ -149,7 +147,7 @@ def draw_the_road():
     _y = var.node_positions[i['edge'][1]][1]
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
-    var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x - 25 + var.viewMargin[0], y - 30 + var.viewMargin[1], road_size*scale_w + 20, road_size*scale_h + 20))
+    var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x - 28 + var.viewMargin[0], y - 30 + var.viewMargin[1], road_size*scale_w + 20, road_size*scale_h + 20))
   
   # Draw strip Horizontal
   for i in range(0, 1200,50):
