@@ -3,16 +3,16 @@ show_opt = ['quota', 'vehicles', 'weight']
 show = show_opt[-1]
 
 # Show the boxes to vehicles?
-show_boxes = True
+show_boxes = False
 
 # Show the busy nodes?
 show_busy = True
 
 # Show the road?
-show_road = False
+show_road = True
 
 # Show node boxes?
-show_node_boxes = True
+show_node_boxes = False
 
 # Show the clock
 show_clock = True

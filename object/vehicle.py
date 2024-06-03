@@ -290,4 +290,4 @@ class Vehicle:
     if not self.reverting:
       self.handle_direction()
       
-    screen.blit(self.veh, (self.x + var.viewMargin[0], self.y + var.viewMargin[1]))
+    screen.blit(self.veh, (self.x - 5 + var.viewMargin[0], self.y - 5 + var.viewMargin[1]))
