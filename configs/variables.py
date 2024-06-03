@@ -9,7 +9,7 @@ show_boxes = True
 show_busy = True
 
 # Show the road?
-show_road = False
+show_road = True
 
 # Show node boxes?
 show_node_boxes = True
@@ -83,7 +83,7 @@ def getEdgeLength(start, stop):
 # Vehicles
 vehicles = []
 gigaNumber = 999999
-max_vehicles = 30
+max_vehicles = 100
 
 # Colors
 colors = {

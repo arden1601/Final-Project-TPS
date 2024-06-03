@@ -143,10 +143,10 @@ def draw_the_road():
   road_size = var.edgeWidth + 20
   
   for i in var.edge_list:
-    x  = var.var.node_positions[i['edge'][0]][0]
-    y  = var.var.node_positions[i['edge'][0]][1]
-    _x = var.var.node_positions[i['edge'][1]][0]
-    _y = var.var.node_positions[i['edge'][1]][1]
+    x  = var.node_positions[i['edge'][0]][0]
+    y  = var.node_positions[i['edge'][0]][1]
+    _x = var.node_positions[i['edge'][1]][0]
+    _y = var.node_positions[i['edge'][1]][1]
     scale_w = 1 if abs(x - _x) / road_size == 0 else abs(x - _x) / road_size
     scale_h = 1 if abs(y - _y) / road_size == 0 else abs(y - _y) / road_size
     var.pyptr.draw.rect(var.win, var.colors['GRAY'], var.pyptr.Rect(x - 25 + var.viewMargin[0], y - 30 + var.viewMargin[1], road_size*scale_w + 20, road_size*scale_h + 20))
@@ -159,6 +159,7 @@ def draw_the_road():
       var.win.blit(strip_horizontal, (i + 40, 537))
     if i > 100:
       var.win.blit(strip_horizontal, (i + 40, 737))
+  # Draw strip Vertical
   for i in range(0, 800,50):
     if i > 75 and i < 750:
       var.win.blit(strip_vertical, (142, i + 40))
