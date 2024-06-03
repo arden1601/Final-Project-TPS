@@ -101,7 +101,7 @@ class Vehicle:
       var.G[0]['graph'][start_position][self.next_target]['weight'] = var.G[0]['graph'][start_position][self.next_target]['weight'] + 1
     
     self.final_target = final_target
-    self.speed = .5
+    self.speed = .5 if self.type == 'car' else .8
   
   def goToTarget(self):
     # Target direction
@@ -382,6 +382,9 @@ class Vehicle:
         
         # remove the vehicle
         var.vehicles.remove(self)
+        end_time = time.time()
+        self.time_taken = end_time - self.start_time
+        var.time_taken.append(self.time_taken)
         
         # remove the vehicle from the node_occupy
         self.clearOccupation()

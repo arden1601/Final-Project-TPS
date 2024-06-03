@@ -97,7 +97,6 @@ veh_choices = [
 
 # Average Time
 time_taken = []
-avg_time = 0
 # Colors
 colors = {
   'WHITE': (255, 255, 255),
